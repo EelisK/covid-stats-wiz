@@ -13,6 +13,12 @@ export interface RequestProps {
   body?: Data;
 }
 
+export class HttpError extends Error {
+  constructor(public readonly status: number, message: string) {
+    super(message);
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -40,7 +46,7 @@ export class HttpService {
     });
     const response = await req.json();
     if (!req.ok) {
-      throw new Error(response.detail);
+      throw new HttpError(req.status, response.detail);
     }
     return response;
   }
