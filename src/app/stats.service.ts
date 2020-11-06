@@ -1,10 +1,10 @@
 import { groupBy, mapValues, reduce } from 'lodash';
-import { subDays, startOfToday } from 'date-fns';
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import {
   AggregatedCountryDaySummary,
   AllCountriesSummary,
+  CountryDetails,
   CountryProvinceDaySummary,
 } from './models/covid-api';
 
@@ -18,31 +18,22 @@ export class StatsService {
   public async getEntireHistoryForCountry(
     countrySlug: string
   ): Promise<AggregatedCountryDaySummary[]> {
-    // TODO:; cache results and use in getLastSevenDaysForCountry
+    // TODO: fetch this from firestore
     const entireHistory = await this.httpService.get<
       CountryProvinceDaySummary[]
     >(`${StatsService.API_BASE_URL}/dayone/country/${countrySlug}`);
     return this.composeAggregates(entireHistory);
   }
 
-  public async getLastSevenDaysForCountry(
-    countrySlug: string
-  ): Promise<AggregatedCountryDaySummary[]> {
-    const today = startOfToday();
-    const weekAgo = subDays(today, 7);
-    const lastSevenDays = await this.httpService.get<
-      CountryProvinceDaySummary[]
-    >(
-      `${
-        StatsService.API_BASE_URL
-      }/dayone/country/${countrySlug}?from=${weekAgo.toISOString()}&to=${today.toISOString()}`
-    );
-    return this.composeAggregates(lastSevenDays);
-  }
-
   public async getWorldWideSummary(): Promise<AllCountriesSummary> {
     return await this.httpService.get<AllCountriesSummary>(
       `${StatsService.API_BASE_URL}/summary`
+    );
+  }
+
+  public async getCountriesList(): Promise<CountryDetails[]> {
+    return await this.httpService.get<CountryDetails[]>(
+      `${StatsService.API_BASE_URL}/countries`
     );
   }
 
