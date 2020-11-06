@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonService } from '../common.service';
 import { Awaitable } from '../models/awaitable.model';
 import { AllCountriesSummary, CountrySummary } from '../models/covid-api';
 import { StatsService } from '../stats.service';
@@ -9,8 +10,11 @@ import { StatsService } from '../stats.service';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  private countriesSummary: Awaitable<AllCountriesSummary>;
-  constructor(private readonly statsService: StatsService) {}
+  public countriesSummary: Awaitable<AllCountriesSummary>;
+  constructor(
+    private readonly statsService: StatsService,
+    public readonly commonService: CommonService
+  ) {}
 
   public async ngOnInit(): Promise<void> {
     try {
@@ -27,27 +31,15 @@ export class SummaryComponent implements OnInit {
   }
 
   public getCountries(): CountrySummary[] {
-    if (this.countriesSummary?.state === 'success') {
+    if (this.commonService.isSuccess(this.countriesSummary)) {
       return this.countriesSummary.data.Countries;
     } else {
       return [];
     }
   }
 
-  public isLoading(): boolean {
-    return this.countriesSummary?.state === 'loading';
-  }
-
-  public isError(): boolean {
-    return this.countriesSummary?.state === 'error';
-  }
-
-  public isSuccess(): boolean {
-    return this.countriesSummary?.state === 'success';
-  }
-
-  public getError(): string {
-    if (this.countriesSummary?.state === 'error') {
+  public getError(): string | null {
+    if (this.commonService.isError(this.countriesSummary)) {
       return this.countriesSummary.error.message;
     } else {
       return null;

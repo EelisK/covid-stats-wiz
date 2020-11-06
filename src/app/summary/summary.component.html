@@ -1,8 +1,10 @@
-<div *ngIf="isLoading()">Loading...</div>
+<div *ngIf="commonService.isLoading(countriesSummary)">Loading...</div>
 
-<div *ngIf="isError()">An error occurred: {{ getError() }}</div>
+<div *ngIf="commonService.isError(countriesSummary)">
+  An error occurred: {{ getError() }}
+</div>
 
-<table *ngIf="isSuccess()">
+<table *ngIf="commonService.isSuccess(countriesSummary)">
   <thead>
     <th>Country</th>
 
@@ -17,7 +19,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let country of getCountries()">
-      <td [routerLink]="'/countries/' + country.Slug">
+      <td [routerLink]="['/countries', country.Slug]">
         {{ country.Country }}
       </td>
 

@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SummaryComponent } from './summary/summary.component';
+import { CountryComponent } from './country/country.component';
 
 const routes: Routes = [
-  // { path: 'countries/:countrySlug' },
+  { path: 'countries/:countrySlug', component: CountryComponent },
   { path: 'countries', component: SummaryComponent },
-  // { path: '', redirectTo: 'summary', pathMatch: 'full' },
+  { path: '', redirectTo: 'countries', pathMatch: 'full' },
   // { path: 'admin/login' },
   // { path: 'admin' },
   // { path: '**' },

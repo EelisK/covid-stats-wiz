@@ -1,0 +1,18 @@
+<h1>TODO: add graph</h1>
+
+<table>
+  <thead>
+    <th>Date</th>
+    <th>Total Deaths</th>
+    <th>Total Recovered</th>
+    <th>Total Cases</th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let summary of getEntireHistory()">
+      <td>{{ summary.Date }}</td>
+      <td>{{ summary.Deaths }}</td>
+      <td>{{ summary.Recovered }}</td>
+      <td>{{ summary.Confirmed }}</td>
+    </tr>
+  </tbody>
+</table>
