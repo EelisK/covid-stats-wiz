@@ -1,0 +1,35 @@
+name: Build, test, and lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Test build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn add @angular/cli
+      - run: yarn install --frozen-lockfile --link-duplicates --silent
+      - run: yarn run build
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn add @angular/cli
+      - run: yarn install --frozen-lockfile --link-duplicates --silent
+      - run: yarn run test --watch=false --browsers=ChromeHeadless
+
+  lint:
+    name: Run linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn add @angular/cli
+      - run: yarn install --frozen-lockfile --link-duplicates --silent
+      - run: yarn run lint
