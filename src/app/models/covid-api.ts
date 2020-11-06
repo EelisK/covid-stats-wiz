@@ -28,6 +28,12 @@ export interface CountrySummary {
   Premium: {};
 }
 
+export interface CountryDetails {
+  Country: string;
+  Slug: string;
+  ISO2: string;
+}
+
 export interface AggregatedCountryDaySummary {
   Country: string;
   CountryCode: string;

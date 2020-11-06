@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { routes } from '../app-routing.module';
 import { CountryComponent } from './country.component';
 
 describe('CountryComponent', () => {
@@ -8,9 +9,9 @@ describe('CountryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CountryComponent ]
-    })
-    .compileComponents();
+      declarations: [CountryComponent],
+      imports: [RouterTestingModule.withRoutes(routes)],
+    }).compileComponents();
   });
 
   beforeEach(() => {

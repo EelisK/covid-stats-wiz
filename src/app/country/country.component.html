@@ -1,18 +1,40 @@
-<h1>TODO: add graph</h1>
+<div *ngIf="isLoading(); else content">Loading...</div>
 
-<table>
-  <thead>
-    <th>Date</th>
-    <th>Total Deaths</th>
-    <th>Total Recovered</th>
-    <th>Total Cases</th>
-  </thead>
-  <tbody>
-    <tr *ngFor="let summary of getEntireHistory()">
-      <td>{{ summary.Date }}</td>
-      <td>{{ summary.Deaths }}</td>
-      <td>{{ summary.Recovered }}</td>
-      <td>{{ summary.Confirmed }}</td>
-    </tr>
-  </tbody>
-</table>
+<ng-template #content>
+  <h1>TODO: replace the following table with a bar chart</h1>
+  <table>
+    <thead>
+      <th>Date</th>
+      <th>Total Deaths</th>
+      <th>Total Recovered</th>
+      <th>Total Cases</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let summary of getLastSevenDays()">
+        <td>{{ summary.Date }}</td>
+        <td>{{ summary.Deaths }}</td>
+        <td>{{ summary.Recovered }}</td>
+        <td>{{ summary.Confirmed }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1>TODO: replace the following table with a graph</h1>
+
+  <table>
+    <thead>
+      <th>Date</th>
+      <th>Total Deaths</th>
+      <th>Total Recovered</th>
+      <th>Total Cases</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let summary of getEntireHistory()">
+        <td>{{ summary.Date }}</td>
+        <td>{{ summary.Deaths }}</td>
+        <td>{{ summary.Recovered }}</td>
+        <td>{{ summary.Confirmed }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
