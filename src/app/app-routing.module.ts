@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SummaryComponent } from './summary/summary.component';
 import { CountryComponent } from './country/country.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: 'countries/:countrySlug', component: CountryComponent },
   { path: 'countries', component: SummaryComponent },
   { path: '', redirectTo: 'countries', pathMatch: 'full' },
