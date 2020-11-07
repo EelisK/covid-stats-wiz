@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { startOfToday, subDays } from 'date-fns';
 import { CommonService } from '../common.service';
 import { Awaitable } from '../models/awaitable.model';
 import { AggregatedCountryDaySummary } from '../models/covid-api';
@@ -13,6 +12,7 @@ import { StatsService } from '../stats.service';
 })
 export class CountryComponent implements OnInit {
   private countryEntireHistory: Awaitable<AggregatedCountryDaySummary[]>;
+  private countryLastSevenDayChanges: Awaitable<AggregatedCountryDaySummary[]>;
   constructor(
     private readonly statsService: StatsService,
     private readonly commonService: CommonService,
@@ -23,7 +23,27 @@ export class CountryComponent implements OnInit {
     this.route.paramMap.subscribe(async (paramMap) => {
       const countrySlug = paramMap.get('countrySlug');
       await this.tryUpdateSummaries(countrySlug);
+      await this.tryUpdateLastSevendaysData(countrySlug);
     });
+  }
+
+  private async tryUpdateLastSevendaysData(countrySlug: string): Promise<void> {
+    try {
+      this.countryLastSevenDayChanges = { state: 'loading' };
+      if (countrySlug === null) {
+        throw new Error('CountrySlug was not provided');
+      }
+      const summary = await this.statsService.getLastSevenDaysForCountry(
+        countrySlug
+      );
+      this.countryLastSevenDayChanges = {
+        state: 'success',
+        data: summary,
+        lastFetched: new Date(),
+      };
+    } catch (error) {
+      this.countryLastSevenDayChanges = { state: 'error', error };
+    }
   }
 
   private async tryUpdateSummaries(countrySlug: string): Promise<void> {
@@ -46,7 +66,10 @@ export class CountryComponent implements OnInit {
   }
 
   public isLoading(): boolean {
-    return this.commonService.isLoading(this.countryEntireHistory);
+    return (
+      this.commonService.isLoading(this.countryEntireHistory) ||
+      this.commonService.isLoading(this.countryLastSevenDayChanges)
+    );
   }
 
   public getEntireHistory(): AggregatedCountryDaySummary[] {
@@ -58,9 +81,10 @@ export class CountryComponent implements OnInit {
   }
 
   public getLastSevenDays(): AggregatedCountryDaySummary[] {
-    const history = this.getEntireHistory();
-    const today = startOfToday();
-    const weekAgo = subDays(today, 7);
-    return history.filter((x) => new Date(x.Date) >= weekAgo);
+    if (this.commonService.isSuccess(this.countryLastSevenDayChanges)) {
+      return this.countryLastSevenDayChanges.data;
+    } else {
+      return [];
+    }
   }
 }
