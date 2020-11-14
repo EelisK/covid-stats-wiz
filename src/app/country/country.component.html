@@ -1,6 +1,51 @@
-<div *ngIf="isLoading(); else content">Loading...</div>
+<div *ngIf="isLoading; else content">Loading...</div>
 
 <ng-template #content>
+  <table>
+    <thead>
+      <tr>
+        <h3>Corona Virus Summary {{ summary.Country }}</h3>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Total Cases</th>
+        <td>{{ summary.TotalConfirmed }}</td>
+      </tr>
+      <tr>
+        <th>New Cases</th>
+        <td>{{ summary.NewConfirmed }}</td>
+      </tr>
+      <tr>
+        <th>Active Cases</th>
+        <td>{{ activeCases }}</td>
+      </tr>
+      <tr>
+        <th>Total Recovered</th>
+        <td>{{ summary.TotalRecovered }}</td>
+      </tr>
+      <tr>
+        <th>New Recovered</th>
+        <td>{{ summary.NewRecovered }}</td>
+      </tr>
+      <tr>
+        <th>Recovery Rate</th>
+        <td>{{ recoveryRate | percent: "1.2-2" }}</td>
+      </tr>
+      <tr>
+        <th>Total Deaths</th>
+        <td>{{ summary.TotalDeaths }}</td>
+      </tr>
+      <tr>
+        <th>New Deaths</th>
+        <td>{{ summary.NewDeaths }}</td>
+      </tr>
+      <tr>
+        <th>Mortality Rate</th>
+        <td>{{ mortalityRate | percent: "1.2-2" }}</td>
+      </tr>
+    </tbody>
+  </table>
   <h1>TODO: replace the following table with a bar chart</h1>
   <table>
     <thead>
@@ -10,8 +55,8 @@
       <th>Total Cases</th>
     </thead>
     <tbody>
-      <tr *ngFor="let summary of getLastSevenDays()">
-        <td>{{ summary.Date }}</td>
+      <tr *ngFor="let summary of lastSevenDays">
+        <td>{{ summary.Date | date }}</td>
         <td>{{ summary.Deaths }}</td>
         <td>{{ summary.Recovered }}</td>
         <td>{{ summary.Confirmed }}</td>
@@ -29,7 +74,7 @@
       <th>Total Cases</th>
     </thead>
     <tbody>
-      <tr *ngFor="let summary of getEntireHistory()">
+      <tr *ngFor="let summary of entireHistory">
         <td>{{ summary.Date }}</td>
         <td>{{ summary.Deaths }}</td>
         <td>{{ summary.Recovered }}</td>

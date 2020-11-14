@@ -1,4 +1,4 @@
-import { memoize, groupBy, mapValues, reduce, zip } from 'lodash';
+import { memoize, groupBy, mapValues, reduce, zip, maxBy } from 'lodash';
 import { Injectable } from '@angular/core';
 import { subDays, startOfToday } from 'date-fns';
 import { HttpService } from './http.service';
@@ -7,6 +7,7 @@ import {
   AllCountriesSummary,
   CountryDetails,
   CountryProvinceDaySummary,
+  CountrySummary,
 } from './models/covid-api';
 
 @Injectable({
@@ -39,6 +40,26 @@ export class StatsService {
     return await this.httpService.get<AllCountriesSummary>(
       `${StatsService.API_BASE_URL}/summary`
     );
+  }
+
+  public async getCountryLiveStatus(
+    countrySlug: string
+  ): Promise<AggregatedCountryDaySummary> {
+    const provinces = await this.httpService.get<CountryProvinceDaySummary[]>(
+      `${StatsService.API_BASE_URL}/live/country/${countrySlug}`
+    );
+    const aggregatedResults = this.composeAggregatesByDate(provinces);
+    return maxBy(aggregatedResults, (x) => new Date(x.Date));
+  }
+
+  public async getCountrySummary(countrySlug: string): Promise<CountrySummary> {
+    // unfortunately, there is no endpoint for a single country
+    const world = await this.getWorldWideSummary();
+    const country = world.Countries.find(({ Slug }) => Slug === countrySlug);
+    if (!country) {
+      throw new Error(`No summary found for country ${countrySlug}`);
+    }
+    return country;
   }
 
   public async getLastSevenDaysForCountry(countrySlug: string): Promise<any> {
