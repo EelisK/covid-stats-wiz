@@ -15,6 +15,8 @@ jobs:
       - run: yarn add @angular/cli@10.2.0
       - run: yarn install --frozen-lockfile --link-duplicates --silent
       - run: yarn run build
+        with:
+          firebase_config: "${{ secrets.FIREBASE_CONFIG }}"
 
   test:
     name: Run tests
@@ -24,6 +26,8 @@ jobs:
       - run: yarn add @angular/cli@10.2.0
       - run: yarn install --frozen-lockfile --link-duplicates --silent
       - run: yarn run test --watch=false --browsers=ChromeHeadless
+        with:
+          firebase_config: "${{ secrets.FIREBASE_CONFIG }}"
 
   lint:
     name: Run linter
@@ -33,3 +37,5 @@ jobs:
       - run: yarn add @angular/cli@10.2.0
       - run: yarn install --frozen-lockfile --link-duplicates --silent
       - run: yarn run lint
+        with:
+          firebase_config: "${{ secrets.FIREBASE_CONFIG }}"
