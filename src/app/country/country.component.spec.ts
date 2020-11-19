@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from '@angular/router/testing';
 import { routes } from '../app-routing.module';
+import { StatsService } from '../stats.service';
 import { CountryComponent } from './country.component';
 
 describe('CountryComponent', () => {
@@ -11,7 +13,9 @@ describe('CountryComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [CountryComponent],
       imports: [RouterTestingModule.withRoutes(routes)],
-    }).compileComponents();
+      providers: [StatsService, { provide: AngularFirestore, useValue: {} }],
+    })
+    .compileComponents();
   });
 
   beforeEach(() => {
