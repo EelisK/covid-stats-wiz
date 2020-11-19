@@ -1,6 +1,51 @@
-<div *ngIf="isLoading(); else content">Loading...</div>
+<div *ngIf="isLoading; else content">Loading...</div>
 
 <ng-template #content>
+  <table>
+    <thead>
+      <tr>
+        <h3>Corona Virus Summary {{ summary.country }}</h3>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Total Cases</th>
+        <td>{{ summary.totalConfirmed }}</td>
+      </tr>
+      <tr>
+        <th>New Cases</th>
+        <td>{{ summary.newConfirmed }}</td>
+      </tr>
+      <tr>
+        <th>Active Cases</th>
+        <td>{{ summary.activeCases }}</td>
+      </tr>
+      <tr>
+        <th>Total Recovered</th>
+        <td>{{ summary.totalRecovered }}</td>
+      </tr>
+      <tr>
+        <th>New Recovered</th>
+        <td>{{ summary.newRecovered }}</td>
+      </tr>
+      <tr>
+        <th>Recovery Rate</th>
+        <td>{{ summary.recoveryRate | percent: "1.2-2" }}</td>
+      </tr>
+      <tr>
+        <th>Total Deaths</th>
+        <td>{{ summary.totalDeaths }}</td>
+      </tr>
+      <tr>
+        <th>New Deaths</th>
+        <td>{{ summary.newDeaths }}</td>
+      </tr>
+      <tr>
+        <th>Mortality Rate</th>
+        <td>{{ summary.mortalityRate | percent: "1.2-2" }}</td>
+      </tr>
+    </tbody>
+  </table>
   <h1>TODO: replace the following table with a bar chart</h1>
   <table>
     <thead>
@@ -10,11 +55,11 @@
       <th>Total Cases</th>
     </thead>
     <tbody>
-      <tr *ngFor="let summary of getLastSevenDays()">
-        <td>{{ summary.Date }}</td>
-        <td>{{ summary.Deaths }}</td>
-        <td>{{ summary.Recovered }}</td>
-        <td>{{ summary.Confirmed }}</td>
+      <tr *ngFor="let day of summary.lastWeek">
+        <td>{{ day.Date | date }}</td>
+        <td>{{ day.NewDeaths }}</td>
+        <td>{{ day.NewRecovered }}</td>
+        <td>{{ day.NewConfirmed }}</td>
       </tr>
     </tbody>
   </table>
@@ -29,11 +74,11 @@
       <th>Total Cases</th>
     </thead>
     <tbody>
-      <tr *ngFor="let summary of getEntireHistory()">
-        <td>{{ summary.Date }}</td>
-        <td>{{ summary.Deaths }}</td>
-        <td>{{ summary.Recovered }}</td>
-        <td>{{ summary.Confirmed }}</td>
+      <tr *ngFor="let day of summary.dayone">
+        <td>{{ day.Date }}</td>
+        <td>{{ day.TotalDeaths }}</td>
+        <td>{{ day.TotalRecovered }}</td>
+        <td>{{ day.TotalConfirmed }}</td>
       </tr>
     </tbody>
   </table>

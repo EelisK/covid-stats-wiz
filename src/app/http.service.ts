@@ -22,7 +22,7 @@ export class HttpError extends Error {
 @Injectable({
   providedIn: 'root',
 })
-export class HttpService {
+export class HttpService implements HttpClient {
   constructor() {}
 
   private static readonly defaultHeaders = {

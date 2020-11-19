@@ -1,28 +1,73 @@
-import { groupBy, mapValues, reduce } from 'lodash';
+import { memoize } from 'lodash';
 import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { subDays, startOfToday, isEqual as datesMatch } from 'date-fns';
 import { HttpService } from './http.service';
 import {
-  AggregatedCountryDaySummary,
   AllCountriesSummary,
   CountryDetails,
-  CountryProvinceDaySummary,
+  DayOneCell,
 } from './models/covid-api';
+import {
+  IStatsWizCountryHistory,
+  StatsWizCountryHistory,
+} from './models/stats-wiz';
+import {
+  calculateDailyChanges,
+  aggregateHistoryByDate,
+} from './stats.adapters';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StatsService {
   private static readonly API_BASE_URL = 'https://api.covid19api.com';
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly firestore: AngularFirestore
+  ) {
+    this.getCountriesList = memoize(this.getCountriesList.bind(this));
+    this.getWorldWideSummary = memoize(this.getWorldWideSummary.bind(this));
+    this.getStatsWizCountrySummary = memoize(
+      this.getStatsWizCountrySummary.bind(this)
+    );
+  }
 
-  public async getEntireHistoryForCountry(
+  public async getStatsWizCountrySummary(
     countrySlug: string
-  ): Promise<AggregatedCountryDaySummary[]> {
-    // TODO: fetch this from firestore
-    const entireHistory = await this.httpService.get<
-      CountryProvinceDaySummary[]
-    >(`${StatsService.API_BASE_URL}/dayone/country/${countrySlug}`);
-    return this.composeAggregates(entireHistory);
+  ): Promise<StatsWizCountryHistory> {
+    const todaysDate = startOfToday();
+    const countryDoc = this.firestore.collection('countries').doc(countrySlug);
+    const countryDocRef = await countryDoc.ref.get();
+
+    if (countryDocRef.exists) {
+      const data = countryDocRef.data() as IStatsWizCountryHistory;
+      if (datesMatch(new Date(data.lastUpdate), todaysDate)) {
+        return new StatsWizCountryHistory(data);
+      }
+    }
+
+    const entireHistoryRaw = await this.httpService.get<DayOneCell[]>(
+      `${StatsService.API_BASE_URL}/dayone/country/${countrySlug}`
+    );
+    const entireHistory = aggregateHistoryByDate(entireHistoryRaw);
+    const dateEightDaysAgo = subDays(todaysDate, 8);
+    const lastEightDaysHistory = entireHistory.filter(
+      (x) => new Date(x.date) >= dateEightDaysAgo
+    );
+    const lastWeek = calculateDailyChanges(lastEightDaysHistory);
+    const [samplePoint] = entireHistoryRaw;
+    const country = samplePoint.Country;
+
+    const newData: IStatsWizCountryHistory = {
+      lastUpdate: todaysDate.toISOString(),
+      lastWeek,
+      country,
+      dayone: entireHistory,
+    };
+    await countryDoc.set(newData, { merge: true });
+
+    return new StatsWizCountryHistory(newData);
   }
 
   public async getWorldWideSummary(): Promise<AllCountriesSummary> {
@@ -36,23 +81,4 @@ export class StatsService {
       `${StatsService.API_BASE_URL}/countries`
     );
   }
-
-  private composeAggregates = (
-    history: CountryProvinceDaySummary[]
-  ): AggregatedCountryDaySummary[] => {
-    const casesByDate = groupBy(history, (x) => x.Date);
-    const daySummaries = mapValues(casesByDate, this.aggregateDayResults);
-    return Object.values(daySummaries);
-  };
-
-  private aggregateDayResults = (
-    valuesForDay: CountryProvinceDaySummary[]
-  ): AggregatedCountryDaySummary =>
-    reduce<AggregatedCountryDaySummary>(valuesForDay, (comp, next) => ({
-      ...comp,
-      Active: comp.Active + next.Active,
-      Confirmed: comp.Confirmed + next.Confirmed,
-      Deaths: comp.Deaths + next.Deaths,
-      Recovered: comp.Recovered + next.Recovered,
-    }));
 }

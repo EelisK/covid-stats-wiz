@@ -12,24 +12,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: yarn add @angular/cli
+      - run: yarn add @angular/cli@10.2.0
       - run: yarn install --frozen-lockfile --link-duplicates --silent
       - run: yarn run build
+        with:
+          firebase_config: "${{ secrets.FIREBASE_CONFIG }}"
 
   test:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: yarn add @angular/cli
+      - run: yarn add @angular/cli@10.2.0
       - run: yarn install --frozen-lockfile --link-duplicates --silent
       - run: yarn run test --watch=false --browsers=ChromeHeadless
+        with:
+          firebase_config: "${{ secrets.FIREBASE_CONFIG }}"
 
   lint:
     name: Run linter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: yarn add @angular/cli
+      - run: yarn add @angular/cli@10.2.0
       - run: yarn install --frozen-lockfile --link-duplicates --silent
       - run: yarn run lint
+        with:
+          firebase_config: "${{ secrets.FIREBASE_CONFIG }}"
