@@ -1,39 +1,73 @@
-import { memoize, groupBy, mapValues, reduce, zip, maxBy } from 'lodash';
+import { memoize } from 'lodash';
 import { Injectable } from '@angular/core';
-import { subDays, startOfToday } from 'date-fns';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { subDays, startOfToday, isEqual as datesMatch } from 'date-fns';
 import { HttpService } from './http.service';
 import {
-  AggregatedCountryDaySummary,
   AllCountriesSummary,
   CountryDetails,
-  CountryProvinceDaySummary,
-  CountrySummary,
+  DayOneCell,
 } from './models/covid-api';
+import {
+  IStatsWizCountryHistory,
+  StatsWizCountryHistory,
+} from './models/stats-wiz';
+import {
+  calculateDailyChanges,
+  aggregateHistoryByDate,
+} from './stats.adapters';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StatsService {
   private static readonly API_BASE_URL = 'https://api.covid19api.com';
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly firestore: AngularFirestore
+  ) {
     this.getCountriesList = memoize(this.getCountriesList.bind(this));
     this.getWorldWideSummary = memoize(this.getWorldWideSummary.bind(this));
-    this.getEntireHistoryForCountry = memoize(
-      this.getEntireHistoryForCountry.bind(this)
-    );
-    this.getLastSevenDaysForCountry = memoize(
-      this.getLastSevenDaysForCountry.bind(this)
+    this.getStatsWizCountrySummary = memoize(
+      this.getStatsWizCountrySummary.bind(this)
     );
   }
 
-  public async getEntireHistoryForCountry(
+  public async getStatsWizCountrySummary(
     countrySlug: string
-  ): Promise<AggregatedCountryDaySummary[]> {
-    // TODO: fetch this from firestore
-    const entireHistory = await this.httpService.get<
-      CountryProvinceDaySummary[]
-    >(`${StatsService.API_BASE_URL}/dayone/country/${countrySlug}`);
-    return this.composeAggregatesByDate(entireHistory);
+  ): Promise<StatsWizCountryHistory> {
+    const todaysDate = startOfToday();
+    const countryDoc = this.firestore.collection('countries').doc(countrySlug);
+    const countryDocRef = await countryDoc.ref.get();
+
+    if (countryDocRef.exists) {
+      const data = countryDocRef.data() as IStatsWizCountryHistory;
+      if (datesMatch(new Date(data.lastUpdate), todaysDate)) {
+        return new StatsWizCountryHistory(data);
+      }
+    }
+
+    const entireHistoryRaw = await this.httpService.get<DayOneCell[]>(
+      `${StatsService.API_BASE_URL}/dayone/country/${countrySlug}`
+    );
+    const entireHistory = aggregateHistoryByDate(entireHistoryRaw);
+    const dateEightDaysAgo = subDays(todaysDate, 8);
+    const lastEightDaysHistory = entireHistory.filter(
+      (x) => new Date(x.date) >= dateEightDaysAgo
+    );
+    const lastWeek = calculateDailyChanges(lastEightDaysHistory);
+    const [samplePoint] = entireHistoryRaw;
+    const country = samplePoint.Country;
+
+    const newData: IStatsWizCountryHistory = {
+      lastUpdate: todaysDate.toISOString(),
+      lastWeek,
+      country,
+      dayone: entireHistory,
+    };
+    await countryDoc.set(newData, { merge: true });
+
+    return new StatsWizCountryHistory(newData);
   }
 
   public async getWorldWideSummary(): Promise<AllCountriesSummary> {
@@ -42,76 +76,9 @@ export class StatsService {
     );
   }
 
-  public async getCountryLiveStatus(
-    countrySlug: string
-  ): Promise<AggregatedCountryDaySummary> {
-    const provinces = await this.httpService.get<CountryProvinceDaySummary[]>(
-      `${StatsService.API_BASE_URL}/live/country/${countrySlug}`
-    );
-    const aggregatedResults = this.composeAggregatesByDate(provinces);
-    return maxBy(aggregatedResults, (x) => new Date(x.Date));
-  }
-
-  public async getCountrySummary(countrySlug: string): Promise<CountrySummary> {
-    // unfortunately, there is no endpoint for a single country
-    const world = await this.getWorldWideSummary();
-    const country = world.Countries.find(({ Slug }) => Slug === countrySlug);
-    if (!country) {
-      throw new Error(`No summary found for country ${countrySlug}`);
-    }
-    return country;
-  }
-
-  public async getLastSevenDaysForCountry(countrySlug: string): Promise<any> {
-    const entireHistory = await this.getEntireHistoryForCountry(countrySlug);
-    const today = startOfToday();
-    const eightDaysAgo = subDays(today, 8);
-    const lastEightDays = entireHistory.filter(
-      (x) => new Date(x.Date) >= eightDaysAgo
-    );
-    return this.calculateDailyChanges(lastEightDays);
-  }
-
   public async getCountriesList(): Promise<CountryDetails[]> {
     return await this.httpService.get<CountryDetails[]>(
       `${StatsService.API_BASE_URL}/countries`
     );
   }
-
-  private calculateDailyChanges = (
-    from: AggregatedCountryDaySummary[]
-  ): AggregatedCountryDaySummary[] => {
-    const tail = from.slice(1);
-    const references = from.slice(0, tail.length);
-    return zip(references, tail).map(([oldPoint, newPoint]) =>
-      this.combineAggregates(newPoint, oldPoint, (n, o) => n - o)
-    );
-  };
-
-  private composeAggregatesByDate = (
-    history: CountryProvinceDaySummary[]
-  ): AggregatedCountryDaySummary[] => {
-    const casesByDate = groupBy(history, (x) => x.Date);
-    const daySummaries = mapValues(casesByDate, this.aggregateResultFromDay);
-    return Object.values(daySummaries);
-  };
-
-  private aggregateResultFromDay = (
-    valuesForDay: CountryProvinceDaySummary[]
-  ): AggregatedCountryDaySummary =>
-    reduce<AggregatedCountryDaySummary>(valuesForDay, (comp, next) =>
-      this.combineAggregates(comp, next, (x, y) => x + y)
-    );
-
-  private combineAggregates = (
-    first: AggregatedCountryDaySummary,
-    second: AggregatedCountryDaySummary,
-    operation: (x: number, y: number) => number
-  ): AggregatedCountryDaySummary => ({
-    ...first,
-    Active: operation(first.Active, second.Active),
-    Confirmed: operation(first.Confirmed, second.Confirmed),
-    Deaths: operation(first.Deaths, second.Deaths),
-    Recovered: operation(first.Recovered, second.Recovered),
-  });
 }

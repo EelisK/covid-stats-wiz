@@ -17,16 +17,10 @@ export class SummaryComponent implements OnInit {
   ) {}
 
   public async ngOnInit(): Promise<void> {
-    try {
-      this.countriesSummary = { state: 'loading' };
-      const summary = await this.statsService.getWorldWideSummary();
-      this.countriesSummary = {
-        state: 'success',
-        data: summary,
-        lastFetched: new Date(),
-      };
-    } catch (error) {
-      this.countriesSummary = { state: 'error', error };
+    for await (const result of this.commonService.runAsyncForResult(() =>
+      this.statsService.getWorldWideSummary()
+    )) {
+      this.countriesSummary = result;
     }
   }
 

@@ -12,6 +12,22 @@ import {
 export class CommonService {
   constructor() {}
 
+  public async *runAsyncForResult<T>(
+    operation: () => Promise<T>
+  ): AsyncGenerator<Awaitable<T>> {
+    try {
+      yield { state: 'loading' };
+      const result = await operation();
+      yield {
+        state: 'success',
+        data: result,
+        lastFetched: new Date(),
+      };
+    } catch (error) {
+      yield { state: 'error', error };
+    }
+  }
+
   public isLoading(awaitable?: Awaitable<any>): awaitable is AwaitableLoading {
     return awaitable?.state === 'loading';
   }

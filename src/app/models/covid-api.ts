@@ -25,26 +25,9 @@ export interface CountrySummary {
   NewRecovered: number;
   TotalRecovered: number;
   Date: string;
-  Premium: {};
 }
 
-export interface CountryDetails {
-  Country: string;
-  Slug: string;
-  ISO2: string;
-}
-
-export interface AggregatedCountryDaySummary {
-  Country: string;
-  CountryCode: string;
-  Confirmed: number;
-  Deaths: number;
-  Recovered: number;
-  Active: number;
-  Date: string;
-}
-
-export interface CountryProvinceDaySummary {
+export interface DayOneCell {
   Country: string;
   CountryCode: string;
   Province: string;
@@ -57,4 +40,10 @@ export interface CountryProvinceDaySummary {
   Recovered: number;
   Active: number;
   Date: string;
+}
+
+export interface CountryDetails {
+  Country: string;
+  Slug: string;
+  ISO2: string;
 }

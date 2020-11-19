@@ -4,45 +4,45 @@
   <table>
     <thead>
       <tr>
-        <h3>Corona Virus Summary {{ summary.Country }}</h3>
+        <h3>Corona Virus Summary {{ summary.country }}</h3>
       </tr>
     </thead>
     <tbody>
       <tr>
         <th>Total Cases</th>
-        <td>{{ summary.TotalConfirmed }}</td>
+        <td>{{ summary.totalConfirmed }}</td>
       </tr>
       <tr>
         <th>New Cases</th>
-        <td>{{ summary.NewConfirmed }}</td>
+        <td>{{ summary.newConfirmed }}</td>
       </tr>
       <tr>
         <th>Active Cases</th>
-        <td>{{ activeCases }}</td>
+        <td>{{ summary.activeCases }}</td>
       </tr>
       <tr>
         <th>Total Recovered</th>
-        <td>{{ summary.TotalRecovered }}</td>
+        <td>{{ summary.totalRecovered }}</td>
       </tr>
       <tr>
         <th>New Recovered</th>
-        <td>{{ summary.NewRecovered }}</td>
+        <td>{{ summary.newRecovered }}</td>
       </tr>
       <tr>
         <th>Recovery Rate</th>
-        <td>{{ recoveryRate | percent: "1.2-2" }}</td>
+        <td>{{ summary.recoveryRate | percent: "1.2-2" }}</td>
       </tr>
       <tr>
         <th>Total Deaths</th>
-        <td>{{ summary.TotalDeaths }}</td>
+        <td>{{ summary.totalDeaths }}</td>
       </tr>
       <tr>
         <th>New Deaths</th>
-        <td>{{ summary.NewDeaths }}</td>
+        <td>{{ summary.newDeaths }}</td>
       </tr>
       <tr>
         <th>Mortality Rate</th>
-        <td>{{ mortalityRate | percent: "1.2-2" }}</td>
+        <td>{{ summary.mortalityRate | percent: "1.2-2" }}</td>
       </tr>
     </tbody>
   </table>
@@ -55,11 +55,11 @@
       <th>Total Cases</th>
     </thead>
     <tbody>
-      <tr *ngFor="let summary of lastSevenDays">
-        <td>{{ summary.Date | date }}</td>
-        <td>{{ summary.Deaths }}</td>
-        <td>{{ summary.Recovered }}</td>
-        <td>{{ summary.Confirmed }}</td>
+      <tr *ngFor="let day of summary.lastWeek">
+        <td>{{ day.Date | date }}</td>
+        <td>{{ day.NewDeaths }}</td>
+        <td>{{ day.NewRecovered }}</td>
+        <td>{{ day.NewConfirmed }}</td>
       </tr>
     </tbody>
   </table>
@@ -74,11 +74,11 @@
       <th>Total Cases</th>
     </thead>
     <tbody>
-      <tr *ngFor="let summary of entireHistory">
-        <td>{{ summary.Date }}</td>
-        <td>{{ summary.Deaths }}</td>
-        <td>{{ summary.Recovered }}</td>
-        <td>{{ summary.Confirmed }}</td>
+      <tr *ngFor="let day of summary.dayone">
+        <td>{{ day.Date }}</td>
+        <td>{{ day.TotalDeaths }}</td>
+        <td>{{ day.TotalRecovered }}</td>
+        <td>{{ day.TotalConfirmed }}</td>
       </tr>
     </tbody>
   </table>
