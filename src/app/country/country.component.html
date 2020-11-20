@@ -50,16 +50,16 @@
   <table>
     <thead>
       <th>Date</th>
-      <th>Total Deaths</th>
-      <th>Total Recovered</th>
-      <th>Total Cases</th>
+      <th>Daily Deaths</th>
+      <th>Daily Recovered</th>
+      <th>Daily Cases</th>
     </thead>
     <tbody>
       <tr *ngFor="let day of summary.lastWeek">
-        <td>{{ day.Date | date }}</td>
-        <td>{{ day.NewDeaths }}</td>
-        <td>{{ day.NewRecovered }}</td>
-        <td>{{ day.NewConfirmed }}</td>
+        <td>{{ day.date | date }}</td>
+        <td>{{ day.newDeaths }}</td>
+        <td>{{ day.newRecovered }}</td>
+        <td>{{ day.newConfirmed }}</td>
       </tr>
     </tbody>
   </table>
@@ -75,10 +75,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let day of summary.dayone">
-        <td>{{ day.Date }}</td>
-        <td>{{ day.TotalDeaths }}</td>
-        <td>{{ day.TotalRecovered }}</td>
-        <td>{{ day.TotalConfirmed }}</td>
+        <td>{{ day.date }}</td>
+        <td>{{ day.totalDeaths }}</td>
+        <td>{{ day.totalRecovered }}</td>
+        <td>{{ day.totalConfirmed }}</td>
       </tr>
     </tbody>
   </table>
