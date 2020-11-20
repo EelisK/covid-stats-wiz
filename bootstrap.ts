@@ -5,14 +5,12 @@ const colors = require('colors');
 const targetPath = './src/environments/firebase.environment.ts';
 
 require('dotenv').config();
-const firebaseConfig = process.env.INPUT_FIREBASE_CONFIG;
+const firebaseConfig = process.env.FIREBASE_CONFIG;
 if (!firebaseConfig) {
-  console.error(
-    colors.redBG('INPUT_FIREBASE_CONFIG environment variable not set')
-  );
+  console.error(colors.redBG('FIREBASE_CONFIG environment variable not set'));
   exit(1);
 }
-const envConfigFile = `export const firebaseConfig = JSON.parse(atob('${process.env.INPUT_FIREBASE_CONFIG}'));\n`;
+const envConfigFile = `export const firebaseConfig = JSON.parse(atob('${process.env.FIREBASE_CONFIG}'));\n`;
 console.log(colors.magenta('Writing `firebase.environment.ts`'));
 writeFile(targetPath, envConfigFile, (err) => {
   if (err) {
