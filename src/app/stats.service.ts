@@ -1,4 +1,3 @@
-import { memoize } from 'lodash';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { subDays, startOfToday, isEqual as datesMatch } from 'date-fns';
@@ -25,13 +24,7 @@ export class StatsService {
   constructor(
     private readonly httpService: HttpService,
     private readonly firestore: AngularFirestore
-  ) {
-    this.getCountriesList = memoize(this.getCountriesList.bind(this));
-    this.getWorldWideSummary = memoize(this.getWorldWideSummary.bind(this));
-    this.getStatsWizCountrySummary = memoize(
-      this.getStatsWizCountrySummary.bind(this)
-    );
-  }
+  ) {}
 
   public async getStatsWizCountrySummary(
     countrySlug: string
@@ -48,7 +41,7 @@ export class StatsService {
     }
 
     const entireHistoryRaw = await this.httpService.get<DayOneCell[]>(
-      `${StatsService.API_BASE_URL}/dayone/country/${countrySlug}`
+      `${StatsService.API_BASE_URL}/total/country/${countrySlug}`
     );
     const entireHistory = aggregateHistoryByDate(entireHistoryRaw);
     const dateEightDaysAgo = subDays(todaysDate, 8);
