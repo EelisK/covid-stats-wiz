@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { StatsService } from '../stats.service';
+import { StatsWizEntityHistory } from '../models/stats-wiz';
 
 import { SummaryComponent } from './summary.component';
 
@@ -11,13 +10,26 @@ describe('SummaryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SummaryComponent],
-      providers: [StatsService, { provide: AngularFirestore, useValue: {} }],
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryComponent);
     component = fixture.componentInstance;
+    component.summary = new StatsWizEntityHistory({
+      entityName: 'Test Entity',
+      lastUpdate: '1/1/2020',
+      dayone: [
+        {
+          date: '1/5/2020',
+        } as any,
+      ],
+      lastWeek: [
+        {
+          date: '1/5/2020',
+        } as any,
+      ],
+    });
     fixture.detectChanges();
   });
 

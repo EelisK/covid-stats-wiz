@@ -14,15 +14,15 @@ export interface IStatsWizDayChange {
   date: string;
 }
 
-export interface IStatsWizCountryHistory {
-  country: string;
+export interface IStatsWizEntityHistory {
+  entityName: string;
   lastUpdate: string;
   lastWeek: IStatsWizDayChange[];
   dayone: IStatsWizDayTotal[];
 }
 
-export class StatsWizCountryHistory implements IStatsWizCountryHistory {
-  public readonly country: string;
+export class StatsWizEntityHistory implements IStatsWizEntityHistory {
+  public readonly entityName: string;
   public readonly lastUpdate: string;
   public readonly lastWeek: IStatsWizDayChange[];
   public readonly dayone: IStatsWizDayTotal[];
@@ -30,10 +30,10 @@ export class StatsWizCountryHistory implements IStatsWizCountryHistory {
   private readonly latestTotal: IStatsWizDayTotal;
   private readonly latestChange: IStatsWizDayChange;
 
-  constructor(props: IStatsWizCountryHistory) {
+  constructor(props: IStatsWizEntityHistory) {
     this.lastUpdate = props.lastUpdate;
     this.lastWeek = props.lastWeek;
-    this.country = props.country;
+    this.entityName = props.entityName;
     this.dayone = props.dayone;
 
     this.latestTotal = maxBy(this.dayone, (x) => new Date(x.date));

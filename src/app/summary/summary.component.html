@@ -1,36 +1,50 @@
-<div *ngIf="commonService.isLoading(countriesSummary)">Loading...</div>
+<p-fieldset legend="Summary of Coronavirus in {{ summary.entityName }}">
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">Total Cases</div>
+    <div class="p-col-6">{{ summary.totalConfirmed | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">New Cases</div>
+    <div class="p-col-6">{{ summary.newConfirmed | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">Active Cases</div>
+    <div class="p-col-6">{{ summary.activeCases | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">Total Recovered</div>
+    <div class="p-col-6">{{ summary.totalRecovered | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">New Recovered</div>
+    <div class="p-col-6">{{ summary.newRecovered | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">Recovery Rate</div>
+    <div class="p-col-6">{{ summary.recoveryRate | percent: "1.2-2" }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">Total Deaths</div>
+    <div class="p-col-6">{{ summary.totalDeaths | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">New Deaths</div>
+    <div class="p-col-6">{{ summary.newDeaths | number }}</div>
+  </div>
+  <div class="p-grid p-shadow-1 p-my-1 p-py-1">
+    <div class="p-col-6">Mortality Rate</div>
+    <div class="p-col-6">{{ summary.mortalityRate | percent: "1.2-2" }}</div>
+  </div>
+</p-fieldset>
 
-<div *ngIf="commonService.isError(countriesSummary)">
-  An error occurred: {{ getError() }}
-</div>
+<p-fieldset legend="Coronavirus Case Distribution in {{ summary.entityName }}">
+  <p-chart type="pie" [data]="piechartData"></p-chart>
+</p-fieldset>
 
-<table *ngIf="commonService.isSuccess(countriesSummary)">
-  <thead>
-    <th>Country</th>
+<p-fieldset legend="Coronavirus Daily Cases in {{ summary.entityName }}">
+  <p-chart type="bar" [data]="barchartData"></p-chart>
+</p-fieldset>
 
-    <th>New Cases</th>
-    <th>Total Cases</th>
-
-    <th>New Recoveries</th>
-    <th>Total Recoveries</th>
-
-    <th>New Deaths</th>
-    <th>Total Deaths</th>
-  </thead>
-  <tbody>
-    <tr *ngFor="let country of getCountries()">
-      <td [routerLink]="['/countries', country.Slug]">
-        {{ country.Country }}
-      </td>
-
-      <td>{{ country.NewConfirmed }}</td>
-      <td>{{ country.TotalConfirmed }}</td>
-
-      <td>{{ country.NewRecovered }}</td>
-      <td>{{ country.TotalRecovered }}</td>
-
-      <td>{{ country.NewDeaths }}</td>
-      <td>{{ country.TotalDeaths }}</td>
-    </tr>
-  </tbody>
-</table>
+<p-fieldset legend="Total Coronavirus Cases in {{ summary.entityName }}">
+  <p-chart type="line" [data]="linechartData"></p-chart>
+</p-fieldset>
