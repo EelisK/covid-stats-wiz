@@ -1,6 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { StatsService } from '../stats.service';
 
 import { SummaryComponent } from './summary.component';
 
@@ -10,9 +8,9 @@ describe('SummaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SummaryComponent],
-      providers: [StatsService, { provide: AngularFirestore, useValue: {} }],
-    }).compileComponents();
+      declarations: [ SummaryComponent ]
+    })
+    .compileComponents();
   });
 
   beforeEach(() => {

@@ -39,11 +39,9 @@ export const aggregateHistoryByDate = (
 };
 
 const aggregateResultFromDay = (valuesForDay: DayOneCell[]): DayOneCell =>
-  reduce<DayOneCell>(valuesForDay, (comp, next) =>
-    getCombiner<DayOneCell>()(['Active', 'Confirmed', 'Deaths', 'Recovered'])(
-      comp,
-      next
-    )
+  reduce<DayOneCell>(
+    valuesForDay,
+    getCombiner<DayOneCell>()(['Active', 'Confirmed', 'Deaths', 'Recovered'])
   );
 
 const getCombiner = <T extends Record<string, any>>(

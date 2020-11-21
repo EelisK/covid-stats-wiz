@@ -1,0 +1,76 @@
+<div
+  *ngIf="
+    commonService.isLoading(countriesSummary) ||
+    commonService.isLoading(worldWideHistory)
+  "
+  class="p-d-flex p-jc-center p-ai-center"
+>
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="commonService.isError(countriesSummary)">
+  An error occurred: {{ error }}
+</div>
+
+<app-summary
+  *ngIf="commonService.isSuccess(worldWideHistory)"
+  [summary]="history"
+></app-summary>
+
+<p-table
+  *ngIf="commonService.isSuccess(countriesSummary)"
+  [value]="countries"
+  sortField="Country"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th [pSortableColumn]="'Country'">
+        <p-sortIcon [field]="'Country'"></p-sortIcon>
+        Country
+      </th>
+
+      <th [pSortableColumn]="'NewConfirmed'">
+        <p-sortIcon [field]="'NewConfirmed'"></p-sortIcon>
+        New Cases
+      </th>
+      <th [pSortableColumn]="'TotalConfirmed'">
+        <p-sortIcon [field]="'TotalConfirmed'"></p-sortIcon>
+        Total Cases
+      </th>
+
+      <th [pSortableColumn]="'NewRecovered'">
+        <p-sortIcon [field]="'NewRecovered'"></p-sortIcon>
+        New Recoveries
+      </th>
+      <th [pSortableColumn]="'TotalRecovered'">
+        <p-sortIcon [field]="'TotalRecovered'"></p-sortIcon>
+        Total Recoveries
+      </th>
+
+      <th [pSortableColumn]="'NewDeaths'">
+        <p-sortIcon [field]="'NewDeaths'"></p-sortIcon>
+        New Deaths
+      </th>
+      <th [pSortableColumn]="'TotalDeaths'">
+        <p-sortIcon [field]="'TotalDeaths'"></p-sortIcon>
+        Total Deaths
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-country>
+    <tr>
+      <td [routerLink]="['/countries', country.Slug]">
+        {{ country.Country }}
+      </td>
+
+      <td>{{ country.NewConfirmed }}</td>
+      <td>{{ country.TotalConfirmed }}</td>
+
+      <td>{{ country.NewRecovered }}</td>
+      <td>{{ country.TotalRecovered }}</td>
+
+      <td>{{ country.NewDeaths }}</td>
+      <td>{{ country.TotalDeaths }}</td>
+    </tr>
+  </ng-template>
+</p-table>
