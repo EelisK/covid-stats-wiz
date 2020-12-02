@@ -11,8 +11,12 @@ import { StatsService } from '../stats.service';
   styleUrls: ['./global.component.scss'],
 })
 export class GlobalComponent implements OnInit {
-  public countriesSummary: Awaitable<AllCountriesSummary>;
-  public worldWideHistory: Awaitable<StatsWizEntityHistory>;
+  public countriesSummary: Awaitable<AllCountriesSummary> = {
+    state: 'loading',
+  };
+  public worldWideHistory: Awaitable<StatsWizEntityHistory> = {
+    state: 'loading',
+  };
   constructor(
     private readonly statsService: StatsService,
     public readonly commonService: CommonService
@@ -45,7 +49,7 @@ export class GlobalComponent implements OnInit {
     if (this.commonService.isSuccess(this.worldWideHistory)) {
       return this.worldWideHistory.data;
     } else {
-      throw new Error('History not fetched');
+      throw new Error('Worldwide history not fetched');
     }
   }
 
@@ -53,14 +57,20 @@ export class GlobalComponent implements OnInit {
     if (this.commonService.isSuccess(this.countriesSummary)) {
       return this.countriesSummary.data.Countries;
     } else {
-      return [];
+      throw new Error('Countries summary not defined');
     }
   }
 
-  public get error(): string | null {
+  public get countriesError(): string | null {
     if (this.commonService.isError(this.countriesSummary)) {
       return this.countriesSummary.error.message;
-    } else if (this.commonService.isError(this.worldWideHistory)) {
+    } else {
+      return null;
+    }
+  }
+
+  public get historyError(): string | null {
+    if (this.commonService.isError(this.worldWideHistory)) {
       return this.worldWideHistory.error.message;
     } else {
       return null;

@@ -1,76 +1,97 @@
-<div
-  *ngIf="
-    commonService.isLoading(countriesSummary) ||
-    commonService.isLoading(worldWideHistory)
-  "
-  class="p-d-flex p-jc-center p-ai-center"
->
-  <p-progressSpinner></p-progressSpinner>
-</div>
+<p-tabView class="tabview-custom">
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <i class="pi pi-chart-bar"></i>
+      <span>Summary</span>
+    </ng-template>
+    <div *ngIf="commonService.isError(worldWideHistory); else summaryNotError">
+      Could not get summary: {{ historyError }}
+    </div>
+    <ng-template #summaryNotError>
+      <div
+        *ngIf="commonService.isLoading(worldWideHistory); else summaryComponent"
+        class="p-d-flex p-jc-center p-ai-center"
+      >
+        <p-progressSpinner></p-progressSpinner>
+      </div>
+      <ng-template #summaryComponent>
+        <app-summary [summary]="history"></app-summary>
+      </ng-template>
+    </ng-template>
+  </p-tabPanel>
 
-<div *ngIf="commonService.isError(countriesSummary)">
-  An error occurred: {{ error }}
-</div>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <i class="pi pi-table"></i>
+      <span>Countries</span>
+    </ng-template>
+    <div
+      *ngIf="commonService.isError(countriesSummary); else countriesNotError"
+    >
+      Could not get countries: {{ countriesError }}
+    </div>
+    <ng-template #countriesNotError>
+      <div
+        *ngIf="commonService.isLoading(countriesSummary); else countriesTable"
+        class="p-d-flex p-jc-center p-ai-center"
+      >
+        <p-progressSpinner></p-progressSpinner>
+      </div>
+      <ng-template #countriesTable>
+        <p-table [value]="countries" sortField="Country">
+          <ng-template pTemplate="header">
+            <tr>
+              <th [pSortableColumn]="'Country'">
+                <p-sortIcon [field]="'Country'"></p-sortIcon>
+                Country
+              </th>
 
-<app-summary
-  *ngIf="commonService.isSuccess(worldWideHistory)"
-  [summary]="history"
-></app-summary>
+              <th [pSortableColumn]="'NewConfirmed'">
+                <p-sortIcon [field]="'NewConfirmed'"></p-sortIcon>
+                New Cases
+              </th>
+              <th [pSortableColumn]="'TotalConfirmed'">
+                <p-sortIcon [field]="'TotalConfirmed'"></p-sortIcon>
+                Total Cases
+              </th>
 
-<p-table
-  *ngIf="commonService.isSuccess(countriesSummary)"
-  [value]="countries"
-  sortField="Country"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th [pSortableColumn]="'Country'">
-        <p-sortIcon [field]="'Country'"></p-sortIcon>
-        Country
-      </th>
+              <th [pSortableColumn]="'NewRecovered'">
+                <p-sortIcon [field]="'NewRecovered'"></p-sortIcon>
+                New Recoveries
+              </th>
+              <th [pSortableColumn]="'TotalRecovered'">
+                <p-sortIcon [field]="'TotalRecovered'"></p-sortIcon>
+                Total Recoveries
+              </th>
 
-      <th [pSortableColumn]="'NewConfirmed'">
-        <p-sortIcon [field]="'NewConfirmed'"></p-sortIcon>
-        New Cases
-      </th>
-      <th [pSortableColumn]="'TotalConfirmed'">
-        <p-sortIcon [field]="'TotalConfirmed'"></p-sortIcon>
-        Total Cases
-      </th>
+              <th [pSortableColumn]="'NewDeaths'">
+                <p-sortIcon [field]="'NewDeaths'"></p-sortIcon>
+                New Deaths
+              </th>
+              <th [pSortableColumn]="'TotalDeaths'">
+                <p-sortIcon [field]="'TotalDeaths'"></p-sortIcon>
+                Total Deaths
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-country>
+            <tr [routerLink]="['/countries', country.Slug]">
+              <td>
+                {{ country.Country }}
+              </td>
 
-      <th [pSortableColumn]="'NewRecovered'">
-        <p-sortIcon [field]="'NewRecovered'"></p-sortIcon>
-        New Recoveries
-      </th>
-      <th [pSortableColumn]="'TotalRecovered'">
-        <p-sortIcon [field]="'TotalRecovered'"></p-sortIcon>
-        Total Recoveries
-      </th>
+              <td>{{ country.NewConfirmed }}</td>
+              <td>{{ country.TotalConfirmed }}</td>
 
-      <th [pSortableColumn]="'NewDeaths'">
-        <p-sortIcon [field]="'NewDeaths'"></p-sortIcon>
-        New Deaths
-      </th>
-      <th [pSortableColumn]="'TotalDeaths'">
-        <p-sortIcon [field]="'TotalDeaths'"></p-sortIcon>
-        Total Deaths
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-country>
-    <tr>
-      <td [routerLink]="['/countries', country.Slug]">
-        {{ country.Country }}
-      </td>
+              <td>{{ country.NewRecovered }}</td>
+              <td>{{ country.TotalRecovered }}</td>
 
-      <td>{{ country.NewConfirmed }}</td>
-      <td>{{ country.TotalConfirmed }}</td>
-
-      <td>{{ country.NewRecovered }}</td>
-      <td>{{ country.TotalRecovered }}</td>
-
-      <td>{{ country.NewDeaths }}</td>
-      <td>{{ country.TotalDeaths }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+              <td>{{ country.NewDeaths }}</td>
+              <td>{{ country.TotalDeaths }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>

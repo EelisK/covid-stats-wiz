@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PanelModule } from 'primeng/panel';
 import { FieldsetModule } from 'primeng/fieldset';
+import { TabViewModule } from 'primeng/tabview';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 
@@ -15,6 +16,7 @@ import { GlobalComponent } from './global/global.component';
 import { CountryComponent } from './country/country.component';
 import { environment } from 'src/environments/environment';
 import { SummaryComponent } from './summary/summary.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import { SummaryComponent } from './summary/summary.component';
     GlobalComponent,
     CountryComponent,
     SummaryComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,6 +37,7 @@ import { SummaryComponent } from './summary/summary.component';
     ProgressSpinnerModule,
     FieldsetModule,
     PanelModule,
+    TabViewModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
