@@ -10,17 +10,3 @@
   </div>
   <h4 class="p-m-4 text-secondary">Live Updates & Statistics</h4>
 </div>
-
-<div class="p-d-flex p-flex-row p-p-3 p-shadow-1 p-mb-4">
-  <div
-    *ngFor="let part of urlParts; let i = index"
-    [routerLink]="urlParts.slice(0, i + 1)"
-    class="pd-flex p-ac-center"
-  >
-    <span class="p-text-capitalize">{{ part }}</span>
-    <span
-      *ngIf="i + 1 !== urlParts.length"
-      class="pi pi-angle-right path-separator"
-    ></span>
-  </div>
-</div>
