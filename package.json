@@ -26,6 +26,7 @@
     "date-fns": "^2.16.1",
     "firebase": "^8.0.1",
     "lodash": "^4.17.20",
+    "ngx-markdown": "^11.0.0",
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
     "primeng": "^11.0.0-rc.1",

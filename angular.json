@@ -33,9 +33,15 @@
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/mdc-light-deeppurple/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeflex/primeflex.css"
+              "node_modules/primeflex/primeflex.css",
+              "node_modules/prismjs/themes/prism-okaidia.css"
             ],
-            "scripts": ["node_modules/chart.js/dist/Chart.js"]
+            "scripts": [
+              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/marked/lib/marked.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -98,9 +104,15 @@
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/mdc-light-deeppurple/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeflex/primeflex.css"
+              "node_modules/primeflex/primeflex.css",
+              "node_modules/prismjs/themes/prism-okaidia.css"
             ],
-            "scripts": ["node_modules/chart.js/dist/Chart.js"]
+            "scripts": [
+              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/marked/lib/marked.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
+            ]
           }
         },
         "lint": {
