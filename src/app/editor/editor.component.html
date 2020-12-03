@@ -1,0 +1,48 @@
+<div class="p-grid p-fluid">
+  <div class="p-col">
+    <div class="box">
+      <div class="p-inputgroup p-fluid p-col-12">
+        <span class="p-inputgroup-addon pi pi-pencil"></span>
+        <input type="text" pInputText class="p-col-12" placeholder="Title" />
+      </div>
+    </div>
+  </div>
+  <div class="p-col">
+    <div class="box">
+      <div class="p-inputgroup">
+        <p-dropdown
+          class="p-col-12"
+          placeholder="Country"
+          [options]="countries"
+          [(ngModel)]="news.countrySlug"
+          optionLabel="Country"
+        ></p-dropdown>
+      </div>
+    </div>
+  </div>
+  <div class="p-col-12">
+    <div class="box">
+      <p-tabView class="tabview-custom">
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <span>Write</span>
+          </ng-template>
+          <textarea
+            pInputTextarea
+            autoResize="autoResize"
+            [(ngModel)]="news.description"
+          ></textarea>
+        </p-tabPanel>
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <span>Preview</span>
+          </ng-template>
+          <app-news-article [article]="news"></app-news-article>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</div>
+
+<!-- <p-fieldset legend="Preview">
+  </p-fieldset> -->

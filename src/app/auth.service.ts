@@ -9,11 +9,19 @@ import { StatsWizUser, UserRole } from './models/user';
   providedIn: 'root',
 })
 export class AuthService {
-  public loginStatus: Awaitable<StatsWizUser> | null = null;
+  private loginStatus: Awaitable<StatsWizUser> | null = null;
   constructor(
     private readonly afAuth: AngularFireAuth,
     private readonly firestore: AngularFirestore
   ) {}
+
+  public get user(): StatsWizUser | null {
+    if (this.loginStatus?.state === 'success') {
+      return this.loginStatus.data;
+    } else {
+      return null;
+    }
+  }
 
   public async getUnconfirmedUsers(): Promise<StatsWizUser[]> {
     const collection = await this.firestore.collection('users').ref.get();
