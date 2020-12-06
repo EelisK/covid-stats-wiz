@@ -1,0 +1,4 @@
+<p-panel header="{{ article.date | date }} | {{ article.title }}">
+  <div style="border-top: 1px solid gray"></div>
+  <markdown [data]="article.description"></markdown>
+</p-panel>

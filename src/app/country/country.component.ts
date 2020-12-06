@@ -13,7 +13,7 @@ export class CountryComponent implements OnInit {
   public countrySummary: Awaitable<StatsWizEntityHistory> = {
     state: 'loading',
   };
-  private countrySlug: string;
+  public countrySlug: string;
 
   constructor(
     private readonly statsService: StatsService,

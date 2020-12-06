@@ -1,3 +1,4 @@
+<app-header></app-header>
 <p-tabView class="tabview-custom">
   <p-tabPanel>
     <ng-template pTemplate="header">
@@ -93,5 +94,13 @@
         </p-table>
       </ng-template>
     </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <i class="pi pi-bell"></i>
+      <span>News</span>
+    </ng-template>
+    <app-news-list [countrySlug]="null"></app-news-list>
   </p-tabPanel>
 </p-tabView>

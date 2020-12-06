@@ -1,7 +1,34 @@
-<div *ngIf="isLoading; else content" class="p-d-flex p-jc-center p-ai-center">
-  <p-progressSpinner></p-progressSpinner>
+<app-header></app-header>
+
+<div class="p-d-flex p-flex-row p-p-3 p-shadow-1 p-mb-4">
+  <div [routerLink]="'/countries'" class="pd-flex p-ac-center">
+    <span class="p-text-capitalize">Countries</span>
+    <span class="pi pi-angle-right path-separator"></span>
+  </div>
+  <div class="pd-flex p-ac-center">
+    <span class="p-text-capitalize">{{ countrySlug }}</span>
+  </div>
 </div>
 
-<ng-template #content>
-  <app-summary [summary]="summary"></app-summary>
-</ng-template>
+<p-tabView class="tabview-custom">
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <span>Summary</span>
+    </ng-template>
+    <div
+      *ngIf="isLoading; else content"
+      class="p-d-flex p-jc-center p-ai-center"
+    >
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+    <ng-template #content>
+      <app-summary [summary]="summary"></app-summary>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <span>News</span>
+    </ng-template>
+    <app-news-list [countrySlug]="countrySlug"></app-news-list>
+  </p-tabPanel>
+</p-tabView>
