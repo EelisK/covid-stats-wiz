@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthService } from '../auth.service';
 
 import { AdminComponent } from './admin.component';
 
@@ -8,9 +9,9 @@ describe('AdminComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AdminComponent ]
-    })
-    .compileComponents();
+      declarations: [AdminComponent],
+      providers: [{ provide: AuthService, useValue: {} }],
+    }).compileComponents();
   });
 
   beforeEach(() => {

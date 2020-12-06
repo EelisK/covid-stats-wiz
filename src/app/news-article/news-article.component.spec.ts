@@ -8,14 +8,20 @@ describe('NewsArticleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NewsArticleComponent ]
-    })
-    .compileComponents();
+      declarations: [NewsArticleComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NewsArticleComponent);
     component = fixture.componentInstance;
+    component.article = {
+      countrySlug: 'finland',
+      date: new Date('2020-01-01'),
+      description: 'Test',
+      title: 'Test Title',
+      userId: 'mock-user-id',
+    };
     fixture.detectChanges();
   });
 

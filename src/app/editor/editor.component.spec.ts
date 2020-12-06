@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthService } from '../auth.service';
+import { NewsService } from '../news.service';
+import { StatsService } from '../stats.service';
 
 import { EditorComponent } from './editor.component';
 
@@ -8,9 +11,13 @@ describe('EditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EditorComponent ]
-    })
-    .compileComponents();
+      declarations: [EditorComponent],
+      providers: [
+        { provide: AuthService, useValue: {} },
+        { provide: NewsService, useValue: {} },
+        { provide: StatsService, useValue: {} },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
