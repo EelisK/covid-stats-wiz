@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Awaitable } from './models/awaitable.model';
 import { StatsWizUser, UserRole } from './models/user';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +13,29 @@ export class AuthService {
   private loginStatus: Awaitable<StatsWizUser> | null = null;
   constructor(
     private readonly afAuth: AngularFireAuth,
-    private readonly firestore: AngularFirestore
+    private readonly firestore: AngularFirestore,
+    private readonly router: Router
   ) {}
 
-  public get user(): StatsWizUser | null {
+  public async getUser(): Promise<StatsWizUser | null> {
     if (this.loginStatus?.state === 'success') {
       return this.loginStatus.data;
-    } else {
+    }
+
+    try {
+      // toPromise() is not resolving for some reason
+      const firebaseUser = await new Promise<firebase.User>((resolve) =>
+        this.afAuth.user.subscribe(resolve)
+      );
+      const user = await this.firebaseToStatsWizUser(firebaseUser);
+      this.loginStatus = {
+        state: 'success',
+        data: user,
+        lastFetched: new Date(),
+      };
+      return user;
+    } catch (err) {
+      this.loginStatus = null;
       return null;
     }
   }
@@ -33,25 +50,12 @@ export class AuthService {
   public async signInWithGoogle(): Promise<void> {
     try {
       this.loginStatus = { state: 'loading' };
+      await this.afAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
       const credentials = await this.afAuth.signInWithPopup(
         new firebase.auth.GoogleAuthProvider()
       );
-      const { uid, email, displayName } = credentials.user;
-      const user: StatsWizUser = {
-        uid,
-        email,
-        displayName,
-        role: UserRole.VIEWER,
-      };
-      const userDoc = this.firestore
-        .collection('users')
-        .doc<StatsWizUser>(user.uid);
-      const userDocRef = await userDoc.ref.get();
-      if (!userDocRef.exists) {
-        await userDoc.set(user);
-      }
+      const user = await this.firebaseToStatsWizUser(credentials.user);
 
-      // TODO: persist user
       this.loginStatus = {
         state: 'success',
         data: user,
@@ -62,8 +66,43 @@ export class AuthService {
     }
   }
 
+  public async setUserRole(user: StatsWizUser, role: UserRole): Promise<void> {
+    await this.firestore
+      .collection('users')
+      .doc(user.uid)
+      .set({ role }, { merge: true });
+  }
+
+  public async deleteUser(user: StatsWizUser): Promise<void> {
+    await this.firestore.collection('users').doc(user.uid).delete();
+  }
+
   public async signOut(): Promise<void> {
     await this.afAuth.signOut();
     this.loginStatus = null;
+    this.router.navigate(['countries']);
+  }
+
+  private async firebaseToStatsWizUser(
+    firebaseUser: firebase.User
+  ): Promise<StatsWizUser> {
+    const userDoc = this.firestore
+      .collection('users')
+      .doc<StatsWizUser>(firebaseUser.uid);
+    const userDocRef = await userDoc.ref.get();
+    if (userDocRef.exists) {
+      return userDocRef.data() as StatsWizUser;
+    }
+
+    const { uid, email, displayName, photoURL } = firebaseUser;
+    const user: StatsWizUser = {
+      uid,
+      email,
+      photoURL,
+      displayName,
+      role: UserRole.VIEWER,
+    };
+    await userDoc.set(user);
+    return user;
   }
 }

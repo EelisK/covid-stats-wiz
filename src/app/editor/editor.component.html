@@ -1,23 +1,31 @@
 <div class="p-grid p-fluid">
-  <div class="p-col">
-    <div class="box">
-      <div class="p-inputgroup p-fluid p-col-12">
+  <div class="p-col p-d-flex p-ai-center">
+    <div class="p-col-12">
+      <div class="p-inputgroup p-col-12">
         <span class="p-inputgroup-addon pi pi-pencil"></span>
-        <input type="text" pInputText class="p-col-12" placeholder="Title" />
+        <input
+          type="text"
+          pInputText
+          class="p-col-12"
+          placeholder="Title"
+          [(ngModel)]="news.title"
+        />
       </div>
     </div>
   </div>
   <div class="p-col">
     <div class="box">
-      <div class="p-inputgroup">
-        <p-dropdown
-          class="p-col-12"
-          placeholder="Country"
-          [options]="countries"
-          [(ngModel)]="news.countrySlug"
-          optionLabel="Country"
-        ></p-dropdown>
-      </div>
+      <p-dropdown
+        class="p-col-12"
+        placeholder="Country"
+        filterBy="Country"
+        [showClear]="true"
+        [filter]="true"
+        [options]="countries"
+        [(ngModel)]="news.countrySlug"
+        optionLabel="Country"
+        optionValue="Slug"
+      ></p-dropdown>
     </div>
   </div>
   <div class="p-col-12">
@@ -32,6 +40,7 @@
             autoResize="autoResize"
             [(ngModel)]="news.description"
           ></textarea>
+          <!-- TODO: add fileupload like in github -->
         </p-tabPanel>
         <p-tabPanel>
           <ng-template pTemplate="header">
@@ -42,7 +51,7 @@
       </p-tabView>
     </div>
   </div>
+  <div class="p-col-12">
+    <p-button label="Submit" icon="pi pi-save" (click)="onSubmit()"></p-button>
+  </div>
 </div>
-
-<!-- <p-fieldset legend="Preview">
-  </p-fieldset> -->

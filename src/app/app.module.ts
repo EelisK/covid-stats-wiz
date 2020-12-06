@@ -13,6 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DialogModule } from 'primeng/dialog';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -26,6 +27,7 @@ import { HeaderComponent } from './header/header.component';
 import { SigninComponent } from './signin/signin.component';
 import { EditorComponent } from './editor/editor.component';
 import { NewsArticleComponent } from './news-article/news-article.component';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { NewsArticleComponent } from './news-article/news-article.component';
     SigninComponent,
     EditorComponent,
     NewsArticleComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +57,7 @@ import { NewsArticleComponent } from './news-article/news-article.component';
     DropdownModule,
     InputTextareaModule,
     InputTextModule,
+    DialogModule,
     MarkdownModule.forRoot(),
     FormsModule,
   ],

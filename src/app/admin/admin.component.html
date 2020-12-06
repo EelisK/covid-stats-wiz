@@ -1,0 +1,87 @@
+<div class="p-d-flex p-p-3 card">
+  <h3>ADMIN</h3>
+  <button
+    pButton
+    pRipple
+    type="button"
+    class="p-ml-auto"
+    label="Sign out"
+    icon="pi pi-sign-out"
+    (click)="authService.signOut()"
+  ></button>
+</div>
+
+<p-tabView class="tabview-custom">
+  <p-tabPanel>
+    <ng-template pTemplate="header">News</ng-template>
+    <app-editor></app-editor>
+  </p-tabPanel>
+  <p-tabPanel>
+    <ng-template pTemplate="header">Pending users</ng-template>
+    <!-- TODO: display error -->
+    <!-- PENDING USERS -->
+    <p-table
+      #pendingUsersTable
+      [value]="pendingUsers"
+      [paginator]="false"
+      [rowHover]="true"
+      [sort]
+      dataKey="uid"
+    >
+      <ng-template pTemplate="caption">
+        <div class="p-d-flex p-ai-center p-jc-between">
+          <h5 class="p-m-0">Pending users</h5>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="displayName">
+            User <p-sortIcon field="displayName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="email">
+            email <p-sortIcon field="email"></p-sortIcon>
+          </th>
+          <th pSortableColumn="role">
+            Current role <p-sortIcon field="role"></p-sortIcon>
+          </th>
+          <th *ngIf="currentUserIsEditor">
+            <!-- For editing the user role -->
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>
+            <img
+              [src]="user.photoURL"
+              width="50"
+              style="vertical-align: middle"
+              class="p-shadow-4"
+            />
+            <span class="p-ml-1">{{ user.displayName }}</span>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="p-tag">{{ user.role }}</span>
+          </td>
+          <td *ngIf="currentUserIsEditor">
+            <button
+              pButton
+              pRipple
+              icon="pi pi-check"
+              class="p-button-rounded p-button-success p-mr-2 confirmation-button"
+              (click)="confirmPendingUser(user)"
+            ></button>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-danger confirmation-button"
+              (click)="deletePendingUser(user)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+</p-tabView>
