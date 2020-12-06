@@ -24,7 +24,7 @@ service cloud.firestore {
       allow create: if request.resource.data.role == "VIEWER";
     }
 
-    match /news/{articleId} {
+    match /countries/{countrySlug}/news/{articleId} {
       allow read: if true;
       allow write: if userIsEditor(request.auth.uid);
     }

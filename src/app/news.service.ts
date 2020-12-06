@@ -9,12 +9,24 @@ import { NewsArticle } from './models/news';
 export class NewsService {
   constructor(private readonly firestore: AngularFirestore) {}
 
-  public async getAllNews(): Promise<NewsArticle[]> {
-    const collection = await this.firestore.collection('news').ref.get();
-    return collection.docs.map((x) => x.data() as NewsArticle);
+  public async getNewsForCountry(
+    countrySlug: string | null
+  ): Promise<NewsArticle[]> {
+    const documentId = countrySlug ?? 'worldwide';
+    const newsCollection = await this.firestore
+      .collection('countries')
+      .doc(documentId)
+      .collection('news')
+      .ref.get();
+    return newsCollection.docs.map((x) => x.data() as NewsArticle);
   }
 
   public async addNews(news: NewsArticle): Promise<void> {
-    await this.firestore.collection('news').add(news);
+    const id = news.countrySlug ?? 'worldwide';
+    await this.firestore
+      .collection('countries')
+      .doc(id)
+      .collection('news')
+      .add(news);
   }
 }

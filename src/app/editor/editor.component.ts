@@ -26,7 +26,7 @@ export class EditorComponent implements OnInit {
     const user = await this.authService.getUser();
     this.news = {
       userId: user.uid,
-      date: new Date(),
+      date: new Date().toISOString(),
       countrySlug: null,
       description: '',
       title: '',
