@@ -10,10 +10,25 @@
   </div>
 </div>
 
-<div *ngIf="isLoading; else content" class="p-d-flex p-jc-center p-ai-center">
-  <p-progressSpinner></p-progressSpinner>
-</div>
-
-<ng-template #content>
-  <app-summary [summary]="summary"></app-summary>
-</ng-template>
+<p-tabView class="tabview-custom">
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <span>Summary</span>
+    </ng-template>
+    <div
+      *ngIf="isLoading; else content"
+      class="p-d-flex p-jc-center p-ai-center"
+    >
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+    <ng-template #content>
+      <app-summary [summary]="summary"></app-summary>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <span>News</span>
+    </ng-template>
+    <app-news-list [countrySlug]="countrySlug"></app-news-list>
+  </p-tabPanel>
+</p-tabView>

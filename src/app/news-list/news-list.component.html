@@ -1,0 +1,12 @@
+<div *ngIf="isLoading; else content" class="p-d-flex p-jc-center p-ai-center">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<ng-template #content>
+  <div class="p-shadow-2 p-p-4" *ngIf="articles.length === 0">No news yet</div>
+  <div *ngFor="let article of articles">
+    <div class="p-shadow-2 p-my-4">
+      <app-news-article [article]="article"></app-news-article>
+    </div>
+  </div>
+</ng-template>

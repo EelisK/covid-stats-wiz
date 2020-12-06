@@ -28,6 +28,7 @@ import { SigninComponent } from './signin/signin.component';
 import { EditorComponent } from './editor/editor.component';
 import { NewsArticleComponent } from './news-article/news-article.component';
 import { AdminComponent } from './admin/admin.component';
+import { NewsListComponent } from './news-list/news-list.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { AdminComponent } from './admin/admin.component';
     EditorComponent,
     NewsArticleComponent,
     AdminComponent,
+    NewsListComponent,
   ],
   imports: [
     BrowserModule,

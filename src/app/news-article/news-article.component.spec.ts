@@ -17,7 +17,7 @@ describe('NewsArticleComponent', () => {
     component = fixture.componentInstance;
     component.article = {
       countrySlug: 'finland',
-      date: new Date('2020-01-01'),
+      date: new Date('2020-01-01').toISOString(),
       description: 'Test',
       title: 'Test Title',
       userId: 'mock-user-id',
