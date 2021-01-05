@@ -107,9 +107,17 @@ export class StatsService {
   }
 
   public async getWorldWideSummary(): Promise<AllCountriesSummary> {
-    return await this.httpService.get<AllCountriesSummary>(
+    const summary = await this.httpService.get<AllCountriesSummary>(
       `${StatsService.API_BASE_URL}/summary`
     );
+    /**
+     * The API uses Message to for communicating exceptional situations.
+     * For example: Caching in progress
+     */
+    if (summary.Message) {
+      throw new Error(summary.Message);
+    }
+    return summary;
   }
 
   public async getCountriesList(): Promise<CountryDetails[]> {
