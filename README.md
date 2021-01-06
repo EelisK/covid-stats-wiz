@@ -2,6 +2,10 @@
 
 ## TODO
 
+- Fancier UI
+
+## Done
+
 - Fancy UI with graphs
 - Stats storage in firebase
 - User authentication
