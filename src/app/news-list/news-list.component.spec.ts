@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NewsService } from '../news.service';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 import { NewsListComponent } from './news-list.component';
 
@@ -11,7 +11,10 @@ describe('NewsListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [NewsListComponent],
-      providers: [{ provide: AngularFirestore, useValue: {} }],
+      providers: [
+        { provide: AngularFirestore, useValue: {} },
+        { provide: AngularFireStorage, useValue: {} },
+      ],
     }).compileComponents();
   });
 

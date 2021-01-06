@@ -1,7 +1,7 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{userId}/{assetName} {
+    match /news-assets/{userId}/{assetName} {
       allow read: if true;
       allow write: if request.auth.uid == userId
     }

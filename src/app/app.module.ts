@@ -13,6 +13,9 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DragDropModule } from 'primeng/dragdrop';
+import { FileUploadModule } from 'primeng/fileupload';
+import { HttpClientModule } from '@angular/common/http';
 import { DialogModule } from 'primeng/dialog';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { MarkdownModule } from 'ngx-markdown';
@@ -59,6 +62,9 @@ import { NewsListComponent } from './news-list/news-list.component';
     DropdownModule,
     InputTextareaModule,
     InputTextModule,
+    DragDropModule,
+    HttpClientModule,
+    FileUploadModule,
     DialogModule,
     MarkdownModule.forRoot(),
     FormsModule,
