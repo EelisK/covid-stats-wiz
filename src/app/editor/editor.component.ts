@@ -58,7 +58,10 @@ export class EditorComponent implements OnInit {
   }
 
   private async uploadFiles(files: File[]): Promise<void> {
-    const user = await this.authService.getUser()!;
+    const user = await this.authService.getUser();
+    if (!user) {
+      throw new Error('Catastrophic failure');
+    }
     const urls = await Promise.all(
       files.map(async (file) => {
         const url = await this.newsService.addNewsMedia(user.uid, file);
