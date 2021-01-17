@@ -32,6 +32,7 @@ import { EditorComponent } from './editor/editor.component';
 import { NewsArticleComponent } from './news-article/news-article.component';
 import { AdminComponent } from './admin/admin.component';
 import { NewsListComponent } from './news-list/news-list.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { NewsListComponent } from './news-list/news-list.component';
     NewsArticleComponent,
     AdminComponent,
     NewsListComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
