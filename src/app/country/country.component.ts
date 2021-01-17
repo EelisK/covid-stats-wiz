@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../common.service';
 import { Awaitable } from '../models/awaitable.model';
-import { StatsWizEntityHistory } from '../models/stats-wiz';
+import { IStatsWizEntityHistory } from '../models/stats-wiz';
 import { StatsService } from '../stats.service';
 @Component({
   selector: 'app-country',
@@ -10,7 +10,7 @@ import { StatsService } from '../stats.service';
   styleUrls: ['./country.component.scss'],
 })
 export class CountryComponent implements OnInit {
-  public countrySummary: Awaitable<StatsWizEntityHistory> = {
+  public countrySummary: Awaitable<IStatsWizEntityHistory> = {
     state: 'loading',
   };
   public countrySlug: string;
@@ -32,7 +32,7 @@ export class CountryComponent implements OnInit {
     return this.commonService.isLoading(this.countrySummary);
   }
 
-  public get summary(): StatsWizEntityHistory {
+  public get summary(): IStatsWizEntityHistory {
     if (this.commonService.isSuccess(this.countrySummary)) {
       return this.countrySummary.data;
     } else {

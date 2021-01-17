@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { format } from 'date-fns';
-import { StatsWizEntityHistory } from '../models/stats-wiz';
+import { IStatsWizEntityHistory } from '../models/stats-wiz';
 
 const DEATH_COLOR = '#FF6384';
 const RECOVERY_COLOR = '#36A2EB';
@@ -12,7 +12,7 @@ const ACTIVE_COLOR = '#FFCE56';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  @Input() public summary: StatsWizEntityHistory;
+  @Input() public summary: IStatsWizEntityHistory;
   public piechartData: any;
   public barchartData: any;
   public linechartData: any;
@@ -29,9 +29,9 @@ export class SummaryComponent implements OnInit {
       datasets: [
         {
           data: [
-            this.summary.totalDeaths,
-            this.summary.totalRecovered,
-            this.summary.totalConfirmed,
+            this.summary.latestSummary.totalDeaths,
+            this.summary.latestSummary.totalRecovered,
+            this.summary.latestSummary.totalConfirmed,
           ],
           backgroundColor: [DEATH_COLOR, RECOVERY_COLOR, ACTIVE_COLOR],
         },

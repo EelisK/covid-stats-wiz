@@ -1,39 +1,47 @@
 <p-fieldset legend="Summary of Coronavirus in {{ summary.entityName }}">
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">Total Cases</div>
-    <div class="p-col-6">{{ summary.totalConfirmed | number }}</div>
+    <div class="p-col-6">
+      {{ summary.latestSummary.totalConfirmed | number }}
+    </div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">New Cases</div>
-    <div class="p-col-6">{{ summary.newConfirmed | number }}</div>
+    <div class="p-col-6">{{ summary.latestSummary.newConfirmed | number }}</div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">Active Cases</div>
-    <div class="p-col-6">{{ summary.activeCases | number }}</div>
+    <div class="p-col-6">{{ summary.latestSummary.activeCases | number }}</div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">Total Recovered</div>
-    <div class="p-col-6">{{ summary.totalRecovered | number }}</div>
+    <div class="p-col-6">
+      {{ summary.latestSummary.totalRecovered | number }}
+    </div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">New Recovered</div>
-    <div class="p-col-6">{{ summary.newRecovered | number }}</div>
+    <div class="p-col-6">{{ summary.latestSummary.newRecovered | number }}</div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">Recovery Rate</div>
-    <div class="p-col-6">{{ summary.recoveryRate | percent: "1.2-2" }}</div>
+    <div class="p-col-6">
+      {{ summary.latestSummary.recoveryRate | percent: "1.2-2" }}
+    </div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">Total Deaths</div>
-    <div class="p-col-6">{{ summary.totalDeaths | number }}</div>
+    <div class="p-col-6">{{ summary.latestSummary.totalDeaths | number }}</div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">New Deaths</div>
-    <div class="p-col-6">{{ summary.newDeaths | number }}</div>
+    <div class="p-col-6">{{ summary.latestSummary.newDeaths | number }}</div>
   </div>
   <div class="p-grid p-shadow-1 p-my-1 p-py-1">
     <div class="p-col-6">Mortality Rate</div>
-    <div class="p-col-6">{{ summary.mortalityRate | percent: "1.2-2" }}</div>
+    <div class="p-col-6">
+      {{ summary.latestSummary.mortalityRate | percent: "1.2-2" }}
+    </div>
   </div>
 </p-fieldset>
 
