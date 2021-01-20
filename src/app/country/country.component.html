@@ -3,7 +3,7 @@
 <div class="p-d-flex p-flex-row p-p-3 p-shadow-1 p-mb-4">
   <div [routerLink]="'/countries'" class="pd-flex p-ac-center">
     <span class="p-text-capitalize">Countries</span>
-    <span class="pi pi-angle-right path-separator"></span>
+    <span class="pi pi-angle-right"></span>
   </div>
   <div class="pd-flex p-ac-center">
     <span class="p-text-capitalize">{{ countrySlug }}</span>
@@ -32,3 +32,5 @@
     <app-news-list [countrySlug]="countrySlug"></app-news-list>
   </p-tabPanel>
 </p-tabView>
+
+<app-footer></app-footer>

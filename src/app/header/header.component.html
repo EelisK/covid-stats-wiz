@@ -1,22 +1,23 @@
 <div class="p-d-flex p-flex-md-row p-jc-center p-ai-center">
   <div class="p-ml-auto"></div>
-  <img
-    class="p-mr-4"
-    src="/assets/icon.svg"
-    width="50"
-    [routerLink]="'/countries'"
-  />
-  <h3 class="p-mh-4">COVID-19</h3>
-  <button
-    pButton
-    pRipple
-    type="button"
-    icon="pi pi-sign-in"
-    class="p-ml-auto"
-    label="Manage news"
-    [routerLink]="['/admin']"
-  ></button>
+  <div class="p-mh-4">
+    <img
+      class="p-mx-4"
+      src="https://firebasestorage.googleapis.com/v0/b/covid-stats-wiz.appspot.com/o/icon.svg?alt=media&token=88b517e7-5785-4919-b93c-85935bab837f"
+      width="50"
+      [routerLink]="'/countries'"
+    />
+    <h3>COVID-19</h3>
+  </div>
+  <div class="p-ml-auto"></div>
 </div>
 
-<!-- TODO: button for login -->
-<!-- TODO: button for adding more news as logged in user -->
+<button
+  pButton
+  pRipple
+  type="button"
+  icon="pi pi-sign-in"
+  class="admin-button p-m-2"
+  label="Manage news"
+  [routerLink]="['/admin']"
+></button>

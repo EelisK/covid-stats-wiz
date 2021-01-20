@@ -1,3 +1,5 @@
-.path-separator {
-  vertical-align: bottom;
+:host ::ng-deep .admin-button {
+  position: absolute;
+  right: 0;
+  top: 0;
 }

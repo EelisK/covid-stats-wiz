@@ -14,57 +14,27 @@ export interface IStatsWizDayChange {
   date: string;
 }
 
+export interface IStatsWizEntitySummary {
+  totalConfirmed: number;
+  newConfirmed: number;
+  activeCases: number;
+  totalRecovered: number;
+  newRecovered: number;
+  recoveryRate: number;
+  totalDeaths: number;
+  newDeaths: number;
+  mortalityRate: number;
+}
+
 export interface IStatsWizEntityHistory {
   entityName: string;
   lastUpdate: string;
   lastWeek: IStatsWizDayChange[];
   dayone: IStatsWizDayTotal[];
+  latestSummary: IStatsWizEntitySummary;
 }
 
-export class StatsWizEntityHistory implements IStatsWizEntityHistory {
-  public readonly entityName: string;
-  public readonly lastUpdate: string;
-  public readonly lastWeek: IStatsWizDayChange[];
-  public readonly dayone: IStatsWizDayTotal[];
-
-  private readonly latestTotal: IStatsWizDayTotal;
-  private readonly latestChange: IStatsWizDayChange;
-
-  constructor(props: IStatsWizEntityHistory) {
-    this.lastUpdate = props.lastUpdate;
-    this.lastWeek = props.lastWeek;
-    this.entityName = props.entityName;
-    this.dayone = props.dayone;
-
-    this.latestTotal = maxBy(this.dayone, (x) => new Date(x.date));
-    this.latestChange = maxBy(this.lastWeek, (x) => new Date(x.date));
-  }
-
-  public get activeCases(): number {
-    return this.latestTotal.totalConfirmed - this.latestTotal.totalRecovered;
-  }
-  public get recoveryRate(): number {
-    return this.latestTotal.totalRecovered / this.latestTotal.totalConfirmed;
-  }
-  public get mortalityRate(): number {
-    return this.latestTotal.totalDeaths / this.latestTotal.totalRecovered;
-  }
-  public get totalConfirmed(): number {
-    return this.latestTotal.totalConfirmed;
-  }
-  public get totalDeaths(): number {
-    return this.latestTotal.totalDeaths;
-  }
-  public get totalRecovered(): number {
-    return this.latestTotal.totalRecovered;
-  }
-  public get newConfirmed(): number {
-    return this.latestChange.newConfirmed;
-  }
-  public get newDeaths(): number {
-    return this.latestChange.newDeaths;
-  }
-  public get newRecovered(): number {
-    return this.latestChange.newRecovered;
-  }
-}
+export type IStatsWizFireStoreEntity = Pick<
+  IStatsWizEntityHistory,
+  'latestSummary' | 'lastUpdate'
+>;

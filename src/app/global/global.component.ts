@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../common.service';
 import { Awaitable } from '../models/awaitable.model';
 import { AllCountriesSummary, CountrySummary } from '../models/covid-api';
-import { StatsWizEntityHistory } from '../models/stats-wiz';
+import { IStatsWizEntityHistory } from '../models/stats-wiz';
 import { StatsService } from '../stats.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class GlobalComponent implements OnInit {
   public countriesSummary: Awaitable<AllCountriesSummary> = {
     state: 'loading',
   };
-  public worldWideHistory: Awaitable<StatsWizEntityHistory> = {
+  public worldWideHistory: Awaitable<IStatsWizEntityHistory> = {
     state: 'loading',
   };
   constructor(
@@ -45,7 +45,7 @@ export class GlobalComponent implements OnInit {
     }
   }
 
-  public get history(): StatsWizEntityHistory {
+  public get history(): IStatsWizEntityHistory {
     if (this.commonService.isSuccess(this.worldWideHistory)) {
       return this.worldWideHistory.data;
     } else {

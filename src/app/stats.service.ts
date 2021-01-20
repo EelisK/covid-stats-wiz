@@ -1,4 +1,4 @@
-import { sortBy, takeRight } from 'lodash';
+import { sortBy, takeRight, maxBy } from 'lodash';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { subDays, startOfToday, isEqual as datesMatch } from 'date-fns';
@@ -10,8 +10,11 @@ import {
   DayOneCell,
 } from './models/covid-api';
 import {
+  IStatsWizFireStoreEntity,
   IStatsWizEntityHistory,
-  StatsWizEntityHistory,
+  IStatsWizEntitySummary,
+  IStatsWizDayChange,
+  IStatsWizDayTotal,
 } from './models/stats-wiz';
 import {
   calculateDailyChanges,
@@ -30,18 +33,8 @@ export class StatsService {
 
   public async getStatsWizCountrySummary(
     countrySlug: string
-  ): Promise<StatsWizEntityHistory> {
+  ): Promise<IStatsWizEntityHistory> {
     const todaysDate = startOfToday();
-    const countryDoc = this.firestore.collection('countries').doc(countrySlug);
-    const countryDocRef = await countryDoc.ref.get();
-
-    if (countryDocRef.exists) {
-      const data = countryDocRef.data() as IStatsWizEntityHistory;
-      if (datesMatch(new Date(data.lastUpdate), todaysDate)) {
-        return new StatsWizEntityHistory(data);
-      }
-    }
-
     const entireHistoryRaw = await this.httpService.get<DayOneCell[]>(
       `${StatsService.API_BASE_URL}/total/country/${countrySlug}`
     );
@@ -53,19 +46,22 @@ export class StatsService {
     const lastWeek = calculateDailyChanges(lastEightDaysHistory);
     const [samplePoint] = entireHistoryRaw;
     const country = samplePoint.Country;
+    const latestSummary = await this.getLatestEntitySummary(
+      countrySlug,
+      entireHistory,
+      lastWeek
+    );
 
-    const newData: IStatsWizEntityHistory = {
+    return {
       lastUpdate: todaysDate.toISOString(),
       lastWeek,
       entityName: country,
       dayone: entireHistory,
+      latestSummary,
     };
-    await countryDoc.set(newData, { merge: true });
-
-    return new StatsWizEntityHistory(newData);
   }
 
-  public async getWorldWideHistory(): Promise<StatsWizEntityHistory> {
+  public async getWorldWideHistory(): Promise<IStatsWizEntityHistory> {
     const today = startOfToday();
     const todayISO = today.toISOString();
     /**
@@ -88,22 +84,30 @@ export class StatsService {
         ).toISOString(),
       })
     );
-    return new StatsWizEntityHistory({
+    const dayone = worldWideDataAnnotated.map((x) => ({
+      date: x.Date,
+      totalConfirmed: x.TotalConfirmed,
+      totalDeaths: x.TotalDeaths,
+      totalRecovered: x.TotalRecovered,
+    }));
+    const lastWeek = takeRight(worldWideDataAnnotated, 7).map((x) => ({
+      date: x.Date,
+      newConfirmed: x.NewConfirmed,
+      newDeaths: x.NewDeaths,
+      newRecovered: x.NewRecovered,
+    }));
+    const latestSummary = await this.getLatestEntitySummary(
+      'worldwide',
+      dayone,
+      lastWeek
+    );
+    return {
       lastUpdate: todayISO,
       entityName: 'The World',
-      lastWeek: takeRight(worldWideDataAnnotated, 7).map((x) => ({
-        date: x.Date,
-        newConfirmed: x.NewConfirmed,
-        newDeaths: x.NewDeaths,
-        newRecovered: x.NewRecovered,
-      })),
-      dayone: worldWideDataAnnotated.map((x) => ({
-        date: x.Date,
-        totalConfirmed: x.TotalConfirmed,
-        totalDeaths: x.TotalDeaths,
-        totalRecovered: x.TotalRecovered,
-      })),
-    });
+      latestSummary,
+      lastWeek,
+      dayone,
+    };
   }
 
   public async getWorldWideSummary(): Promise<AllCountriesSummary> {
@@ -124,5 +128,45 @@ export class StatsService {
     return await this.httpService.get<CountryDetails[]>(
       `${StatsService.API_BASE_URL}/countries`
     );
+  }
+
+  private async getLatestEntitySummary(
+    countrySlugOrAlias: string,
+    dailyAggregated: IStatsWizDayTotal[],
+    dailyChanges: IStatsWizDayChange[]
+  ): Promise<IStatsWizEntitySummary> {
+    const todaysDate = startOfToday();
+    const countryDoc = this.firestore
+      .collection('countries')
+      .doc(countrySlugOrAlias);
+    const countryDocRef = await countryDoc.ref.get();
+
+    if (countryDocRef.exists) {
+      const data = countryDocRef.data() as IStatsWizFireStoreEntity;
+      if (datesMatch(new Date(data.lastUpdate), todaysDate)) {
+        return data.latestSummary;
+      }
+    }
+
+    const latestTotal = maxBy(dailyAggregated, (x) => new Date(x.date));
+    const latestChange = maxBy(dailyChanges, (x) => new Date(x.date));
+    const latestSummary: IStatsWizEntitySummary = {
+      activeCases: latestTotal.totalConfirmed - latestTotal.totalRecovered,
+      recoveryRate: latestTotal.totalRecovered / latestTotal.totalConfirmed,
+      mortalityRate: latestTotal.totalDeaths / latestTotal.totalRecovered,
+      totalConfirmed: latestTotal.totalConfirmed,
+      totalDeaths: latestTotal.totalDeaths,
+      totalRecovered: latestTotal.totalRecovered,
+      newConfirmed: latestChange.newConfirmed,
+      newDeaths: latestChange.newDeaths,
+      newRecovered: latestChange.newRecovered,
+    };
+    const newData: IStatsWizFireStoreEntity = {
+      lastUpdate: todaysDate.toISOString(),
+      latestSummary,
+    };
+    await countryDoc.set(newData, { merge: true });
+
+    return latestSummary;
   }
 }
