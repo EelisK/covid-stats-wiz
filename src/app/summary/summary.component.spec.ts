@@ -28,6 +28,7 @@ describe('SummaryComponent', () => {
           date: '1/5/2020',
         } as any,
       ],
+      latestSummary: {} as any,
     };
     fixture.detectChanges();
   });

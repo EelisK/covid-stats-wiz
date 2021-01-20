@@ -163,7 +163,7 @@ export class StatsService {
     };
     const newData: IStatsWizFireStoreEntity = {
       lastUpdate: todaysDate.toISOString(),
-      latestSummary: latestSummary,
+      latestSummary,
     };
     await countryDoc.set(newData, { merge: true });
 
