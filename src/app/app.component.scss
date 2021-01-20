@@ -8,3 +8,8 @@
 :host ::ng-deep .p-tabview p {
   line-height: 1.5; margin: 0;
 }
+
+:host ::ng-deep .root {
+  max-width: 800px;
+  margin: 0 auto;
+}
