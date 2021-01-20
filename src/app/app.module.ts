@@ -18,7 +18,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
 import { DialogModule } from 'primeng/dialog';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,6 +33,25 @@ import { NewsArticleComponent } from './news-article/news-article.component';
 import { AdminComponent } from './admin/admin.component';
 import { NewsListComponent } from './news-list/news-list.component';
 import { FooterComponent } from './footer/footer.component';
+
+const markedOptionsFactory = (): MarkedOptions => {
+  const renderer = new MarkedRenderer();
+
+  renderer.image = (
+    href: string | null,
+    title: string | null,
+    text: string
+  ): string => `<div><img class="md-image" src="${href}" alt="${text}" /><div>`;
+
+  return {
+    renderer,
+    gfm: true,
+    breaks: false,
+    pedantic: false,
+    smartLists: true,
+    smartypants: false,
+  };
+};
 
 @NgModule({
   declarations: [
@@ -68,7 +87,13 @@ import { FooterComponent } from './footer/footer.component';
     HttpClientModule,
     FileUploadModule,
     DialogModule,
-    MarkdownModule.forRoot(),
+    MarkdownModule.forRoot({
+      loader: HttpClientModule,
+      markedOptions: {
+        provide: MarkedOptions,
+        useFactory: markedOptionsFactory,
+      },
+    }),
     FormsModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
