@@ -28,14 +28,7 @@ export class EditorComponent implements OnInit {
   ) {}
 
   public async ngOnInit(): Promise<void> {
-    const user = await this.authService.getUser();
-    this.news = {
-      userId: user.uid,
-      date: new Date().toISOString(),
-      countrySlug: null,
-      description: '',
-      title: '',
-    };
+    await this.initNews();
     for await (const result of this.commonService.runAsyncForResult(() =>
       this.statsService.getCountriesList()
     )) {
@@ -76,6 +69,7 @@ export class EditorComponent implements OnInit {
 
   public async onSubmit(): Promise<void> {
     await this.newsService.addNews(this.news);
+    await this.initNews();
   }
 
   public get countries(): CountryDetails[] {
@@ -87,5 +81,16 @@ export class EditorComponent implements OnInit {
     } else {
       return [];
     }
+  }
+
+  private async initNews(): Promise<void> {
+    const user = await this.authService.getUser();
+    this.news = {
+      userId: user.uid,
+      date: new Date().toISOString(),
+      countrySlug: null,
+      description: '',
+      title: '',
+    };
   }
 }
