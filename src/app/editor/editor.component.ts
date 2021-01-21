@@ -89,7 +89,11 @@ export class EditorComponent implements OnInit {
 
   public async onSubmit(): Promise<void> {
     await this.newsService.addNews(this.news);
-    await this.initNews();
+    this.newsForm.setValue({
+      title: '',
+      description: '',
+      ...(await this.initNews()),
+    });
   }
 
   public get countries(): CountryDetails[] {
