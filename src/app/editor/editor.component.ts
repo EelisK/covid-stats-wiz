@@ -88,12 +88,8 @@ export class EditorComponent implements OnInit {
     `![${alt}](${url})`;
 
   public async onSubmit(): Promise<void> {
-    console.log('ADDING SOMETHING!!!!!');
-    console.log(this.news);
-    console.log(this.newsForm.valid);
-
-    // await this.newsService.addNews(this.news);
-    // await this.initNews();
+    await this.newsService.addNews(this.news);
+    await this.initNews();
   }
 
   public get countries(): CountryDetails[] {
