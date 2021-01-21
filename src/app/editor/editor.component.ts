@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { CommonService } from '../common.service';
 import { Awaitable } from '../models/awaitable.model';
@@ -13,7 +14,7 @@ import { StatsService } from '../stats.service';
   styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements OnInit {
-  public news: NewsArticle = {} as any;
+  public newsForm: FormGroup = {} as any;
   public fileUploadState: Awaitable<null> = {
     state: 'success',
     data: null,
@@ -24,11 +25,26 @@ export class EditorComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly statsService: StatsService,
     private readonly newsService: NewsService,
+    private readonly formBuilder: FormBuilder,
     public readonly commonService: CommonService
   ) {}
 
   public async ngOnInit(): Promise<void> {
-    await this.initNews();
+    this.newsForm = this.formBuilder.group({
+      title: [null, [Validators.required, Validators.minLength(3)]],
+      description: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(2000),
+        ],
+      ],
+      userId: [null, [Validators.required]],
+      date: [null, [Validators.required]],
+      countrySlug: [null, [Validators.nullValidator]],
+    });
+    this.newsForm.setValue({ ...this.news, ...(await this.initNews()) });
     for await (const result of this.commonService.runAsyncForResult(() =>
       this.statsService.getCountriesList()
     )) {
@@ -50,6 +66,10 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  public get news(): NewsArticle {
+    return this.newsForm.value;
+  }
+
   private async uploadFiles(files: File[]): Promise<void> {
     const user = await this.authService.getUser();
     if (!user) {
@@ -61,15 +81,19 @@ export class EditorComponent implements OnInit {
         return this.getMDImageCreator(file.name)(url);
       })
     );
-    this.news.description += urls.join('\n');
+    this.news.description += ['', ...urls].join('\n');
   }
 
   private getMDImageCreator = (alt: string) => (url: string) =>
     `![${alt}](${url})`;
 
   public async onSubmit(): Promise<void> {
-    await this.newsService.addNews(this.news);
-    await this.initNews();
+    console.log('ADDING SOMETHING!!!!!');
+    console.log(this.news);
+    console.log(this.newsForm.valid);
+
+    // await this.newsService.addNews(this.news);
+    // await this.initNews();
   }
 
   public get countries(): CountryDetails[] {
@@ -83,14 +107,12 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private async initNews(): Promise<void> {
+  private async initNews(): Promise<Partial<NewsArticle>> {
     const user = await this.authService.getUser();
-    this.news = {
+    return {
       userId: user.uid,
       date: new Date().toISOString(),
       countrySlug: null,
-      description: '',
-      title: '',
     };
   }
 }

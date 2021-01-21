@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -95,6 +95,7 @@ const markedOptionsFactory = (): MarkedOptions => {
       },
     }),
     FormsModule,
+    ReactiveFormsModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [],
