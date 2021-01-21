@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { NewsService } from '../news.service';
 import { StatsService } from '../stats.service';
@@ -16,6 +17,7 @@ describe('EditorComponent', () => {
         { provide: AuthService, useValue: {} },
         { provide: NewsService, useValue: {} },
         { provide: StatsService, useValue: {} },
+        { provide: FormBuilder, useValue: { group: () => ({}) } },
       ],
     }).compileComponents();
   });

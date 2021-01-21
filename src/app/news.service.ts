@@ -1,3 +1,4 @@
+import { orderBy } from 'lodash';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -21,7 +22,11 @@ export class NewsService {
       .doc(documentId)
       .collection('news')
       .ref.get();
-    return newsCollection.docs.map((x) => x.data() as NewsArticle);
+    return orderBy(
+      newsCollection.docs.map((x) => x.data() as NewsArticle),
+      (x) => new Date(x.date),
+      'desc'
+    );
   }
 
   public async addNews(news: NewsArticle): Promise<void> {
