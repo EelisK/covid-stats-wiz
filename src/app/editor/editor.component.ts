@@ -20,6 +20,7 @@ export class EditorComponent implements OnInit {
     data: null,
     lastFetched: null,
   };
+  private uploadedFiles: File[] = [];
   private countriesDetails: Awaitable<CountryDetails[]> = { state: 'loading' };
   constructor(
     private readonly authService: AuthService,
@@ -75,13 +76,18 @@ export class EditorComponent implements OnInit {
     if (!user) {
       throw new Error('Catastrophic failure');
     }
+    const newFiles = files.filter((x) => !this.uploadedFiles.includes(x));
+    this.uploadedFiles.push(...files);
     const urls = await Promise.all(
-      files.map(async (file) => {
+      newFiles.map(async (file) => {
         const url = await this.newsService.addNewsMedia(user.uid, file);
         return this.getMDImageCreator(file.name)(url);
       })
     );
-    this.news.description += ['', ...urls].join('\n');
+    this.newsForm.setValue({
+      ...this.news,
+      description: (this.news.description || '') + ['', ...urls].join('\n'),
+    });
   }
 
   private getMDImageCreator = (alt: string) => (url: string) =>
