@@ -94,7 +94,9 @@ export class EditorComponent implements OnInit {
     `![${alt}](${url})`;
 
   public async onSubmit(): Promise<void> {
-    if (this.newsForm.invalid) return;
+    if (this.newsForm.invalid) {
+      return;
+    }
 
     await this.newsService.addNews(this.news);
     this.newsForm.setValue({
